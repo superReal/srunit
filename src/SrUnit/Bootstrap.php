@@ -103,7 +103,7 @@ class Bootstrap
      */
     private function bootstrapComposerAutoloader()
     {
-        $path = __DIR__ . '/../../../vendor/autoloader.php';
+        $path = __DIR__ . '/../../../../vendor/autoload.php';
 
         if (file_exists($path)) {
             $this->composerClassLoader = require $path;
@@ -115,8 +115,8 @@ class Bootstrap
      */
     private function bootstrapOxidFramework()
     {
-        if ($this->isOxidMandatory) {
-            $path = __DIR__ . '/../../../bootstrap.php';
+        if ($this->isOxidMandatory()) {
+            $path = __DIR__ . '/../../../../bootstrap.php';
 
             if (file_exists($path)) {
                 require_once $path;
