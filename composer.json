@@ -1,6 +1,7 @@
 {
     "name": "superreal/srunit",
     "description": "OXID-Module containing Utilities for Unit Tests",
+    "type": "oxid-module",
     "authors": [
         {
             "name": "Jens Wiese",

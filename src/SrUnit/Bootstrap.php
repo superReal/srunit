@@ -47,7 +47,7 @@ class Bootstrap
 
     public function makeOxidMandatory()
     {
-        $this->oxidIsMandatory = true;
+        $this->isOxidMandatory = true;
 
         return $this;
     }
@@ -63,9 +63,19 @@ class Bootstrap
         $this->bootstrapOxidFramework();
         $this->bootstrapRequiredFiles();
 
-        if ($this->isOxidFrameworkMandatory && !$this->isOxidLoaded()) {
+        if ($this->isOxidMandatory() && !$this->isOxidLoaded()) {
             throw new RuntimeException('Could not bootstrap test environment, due to a not loaded Oxid framework.');
         }
+    }
+
+    /**
+     * Returns whether or not Oxid framework is set mandatory
+     *
+     * @return bool
+     */
+    public function isOxidMandatory()
+    {
+        return $this->isOxidMandatory;
     }
 
     /**
