@@ -14,7 +14,6 @@ use Mockery;
  */
 class Factory extends Mockery
 {
-
     /**
      * Mocks _parent-class of used for multiinheritance in Oxid
      *
@@ -28,7 +27,4 @@ class Factory extends Mockery
 
         return $mock;
     }
-
-
-
-} 
+}
