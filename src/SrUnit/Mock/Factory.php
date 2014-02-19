@@ -46,8 +46,8 @@ class Factory extends Mockery
             // Get SrOxUtilsObject instance
             self::$sroxutilsobject = \oxNew('GetSrOxUtilsObject');
         }
-        $sChainedClass = self::$sroxutilsobject->getClassName(strtolower($className));
-        $mock = self::mock($sChainedClass)->shouldDeferMissing();
+        $chainedClassName = self::$sroxutilsobject->getClassName(strtolower($className));
+        $mock = self::mock($chainedClassName)->shouldDeferMissing();
         Registry::set($className, $mock);
 
         return $mock;
