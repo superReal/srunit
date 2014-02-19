@@ -33,7 +33,7 @@ class Registry
      * Instance getter
      *
      * @param $className
-     * @return mixed
+     * @return \Mockery\Mock
      * @throws Exception
      */
     public static function get($className)

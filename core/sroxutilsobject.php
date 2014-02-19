@@ -36,8 +36,7 @@ class SrOxUtilsObject extends SrOxUtilsObject_parent
             }
             array_shift($aArgs);
             $sClassName = strtolower($sClassName);
-            $sActionClassName = $this->getClassName($sClassName);
-            $oActionObject = $this->_getMockObject($sActionClassName, $aArgs);
+            $oActionObject = $this->_getMockObject($sClassName, $aArgs);
         } else {
             // Preserve default behaviour
             $oActionObject = call_user_func_array(array('parent', 'oxNew'), $aArgs);

@@ -48,6 +48,7 @@ class Factory extends Mockery
         }
         $chainedClassName = self::$sroxutilsobject->getClassName(strtolower($className));
         $mock = self::mock($chainedClassName)->shouldDeferMissing();
+
         Registry::set($className, $mock);
 
         return $mock;
