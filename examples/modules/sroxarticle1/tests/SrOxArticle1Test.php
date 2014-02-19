@@ -17,15 +17,19 @@ class SrOxArticle1Test extends TestCase
      */
     public function setUp()
     {
-        \SrUnit\Mock\Factory::mockOxidAware('oxmodulelist')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxconfig')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxutilsfile')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxsession')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxserial')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxutilsserver')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxutils')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxutilsdate')->shouldDeferMissing();
-        \SrUnit\Mock\Factory::mockOxidAware('oxlist')->shouldDeferMissing();
+        \SrUnit\Mock\Factory::mockOxidAware('oxmodulelist');
+        \SrUnit\Mock\Factory::mockOxidAware('oxconfig');
+        \SrUnit\Mock\Factory::mockOxidAware('oxutilsfile');
+        \SrUnit\Mock\Factory::mockOxidAware('oxsession');
+        \SrUnit\Mock\Factory::mockOxidAware('oxserial');
+        \SrUnit\Mock\Factory::mockOxidAware('oxutilsserver')->shouldReceive('setOxCookie')->andReturnNull();
+        \SrUnit\Mock\Factory::mockOxidAware('oxutils');
+        \SrUnit\Mock\Factory::mockOxidAware('oxutilsdate');
+        \SrUnit\Mock\Factory::mockOxidAware('oxlang');
+        \SrUnit\Mock\Factory::mockOxidAware('oxlist');
+        \SrUnit\Mock\Factory::mockOxidAware('oxarticlelist');
+        \SrUnit\Mock\Factory::mockOxidAware('oxarticle');
+        \SrUnit\Mock\Factory::mockOxidAware('oxfield');
     }
 
 
@@ -34,12 +38,13 @@ class SrOxArticle1Test extends TestCase
      */
     public function testGetArticleFiles()
     {
-        $mock = \SrUnit\Mock\Factory::mockOxidAware('oxArticle');
+        $mock = \SrUnit\Mock\Registry::get('oxArticle');
 
         $actualValue = $mock->getArticleFiles()->offsetGet(0);
         $expectedValue = 'faked file';
 
         $this->assertEquals($expectedValue, $actualValue);
+
     }
 }
 
