@@ -43,12 +43,14 @@ class Factory extends Mockery
     public static function mockOxidAware($className)
     {
         if (null === self::$sroxutilsobject) {
-            // Get SrOxUtilsObject instance
+            // Get real and extended oxutilsobject instance
             self::$sroxutilsobject = \oxNew('GetSrOxUtilsObject');
         }
+        // Get the chained class
         $chainedClassName = self::$sroxutilsobject->getClassName(strtolower($className));
+        // Mock chained class partial
         $mock = self::mock($chainedClassName)->shouldDeferMissing();
-
+        // Set mock into registry used by sroxutilsobject class, use original classname as key
         Registry::set($className, $mock);
 
         return $mock;
