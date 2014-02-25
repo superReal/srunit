@@ -15,8 +15,8 @@ use RuntimeException;
  */
 class Bootstrap
 {
-    /** @var array */
-    protected $requiredFiles = array();
+    /** @var string */
+    protected $shopBaseDir;
 
     /** @var  ClassLoader */
     protected $composerClassLoader;
@@ -26,6 +26,7 @@ class Bootstrap
 
     /** @var bool */
     protected $isOxidMandatory = false;
+
 
     /**
      * Creates new Bootstrap object
@@ -37,17 +38,37 @@ class Bootstrap
         return new self();
     }
 
-
-    public function addRequiredFile($path)
+    /**
+     * Constructor
+     */
+    private function __construct()
     {
-        $this->requiredFiles[] = $path;
+        $this->shopBaseDir = __DIR__ . '/../../../../';
+        $this->moduleDir = getcwd();
+    }
+
+    /**
+     * Enable loading of Oxid bootstrapping
+     *
+     * @return $this
+     */
+    public function makeOxidMandatory()
+    {
+        $this->isOxidMandatory = true;
 
         return $this;
     }
 
-    public function makeOxidMandatory()
+    /**
+     * Set module-dir if needed, otherwise the
+     * current work-directory is taken.
+     *
+     * @param string $moduleDir
+     * @return $this
+     */
+    public function setModuleDir($moduleDir)
     {
-        $this->isOxidMandatory = true;
+        $this->moduleDir = rtrim($moduleDir, '/');
 
         return $this;
     }
@@ -59,9 +80,9 @@ class Bootstrap
      */
     public function bootstrap()
     {
-        $this->bootstrapComposerAutoloader();
-        $this->bootstrapOxidFramework();
-        $this->bootstrapRequiredFiles();
+        $this->loadComposerAutoloader();
+        $this->loadOxidFramework();
+        $this->registerModuleAutoloader();
 
         if ($this->isOxidMandatory() && !$this->isOxidLoaded()) {
             throw new RuntimeException('Could not bootstrap test environment, due to a not loaded Oxid framework.');
@@ -101,9 +122,9 @@ class Bootstrap
     /**
      * Bootstraps composer-autoloader
      */
-    private function bootstrapComposerAutoloader()
+    private function loadComposerAutoloader()
     {
-        $path = __DIR__ . '/../../../../vendor/autoload.php';
+        $path = $this->shopBaseDir . 'vendor/autoload.php';
 
         if (file_exists($path)) {
             $this->composerClassLoader = require $path;
@@ -111,12 +132,12 @@ class Bootstrap
     }
 
     /**
-     * Bootraps Oxid
+     * Boostraps Oxid
      */
-    private function bootstrapOxidFramework()
+    private function loadOxidFramework()
     {
         if ($this->isOxidMandatory()) {
-            $path = __DIR__ . '/../../../../bootstrap.php';
+            $path = $this->shopBaseDir . 'bootstrap.php';
 
             if (file_exists($path)) {
                 require_once $path;
@@ -126,14 +147,35 @@ class Bootstrap
     }
 
     /**
-     * Bootstraps all defined required files (if exist)
+     * Bootstraps all files defined in metadata.php
+     * of current module
      */
-    private function bootstrapRequiredFiles()
+    private function registerModuleAutoloader()
     {
-        foreach ($this->requiredFiles as $path) {
-            if (file_exists($path)) {
+        $metadataFilePath = $this->moduleDir . '/metadata.php';
+
+        if (false === file_exists($metadataFilePath)) {
+            return;
+        }
+
+        require_once $metadataFilePath;
+
+        if (false === isset($aModule['files'])) {
+            return;
+        }
+        $customLoader = function($className) use ($aModule) {
+            $className = strtolower($className);
+
+            if (isset($aModule['files'][$className])) {
+                $path = substr(
+                    $aModule['files'][$className],
+                    strpos($aModule['files'][$className], '/') + 1
+                );
+
                 require_once $path;
             }
-        }
+        };
+
+        spl_autoload_register($customLoader);
     }
 } 

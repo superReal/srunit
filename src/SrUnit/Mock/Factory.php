@@ -3,6 +3,7 @@
 namespace SrUnit\Mock;
 
 use Mockery;
+use SrUnit\Bootstrap;
 
 /**
  * Class Factory
@@ -28,8 +29,10 @@ class Factory extends Mockery
      * @param string $className
      * @return Mockery\MockInterface
      */
-    public static function mockParentClass($className)
+    public static function mockOxidParentClass($className)
     {
+        Bootstrap::create()->bootstrap();
+
         $parentClassName = $className . '_parent';
         $mock = self::mock('overload:' . $parentClassName);
 
