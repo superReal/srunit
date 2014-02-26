@@ -66,7 +66,7 @@ class Factory extends Mockery
      * @param string $className
      * @return Builder
      */
-    public function getBuilder($className)
+    public static function createBuilder($className)
     {
         return new Builder($className);
     }

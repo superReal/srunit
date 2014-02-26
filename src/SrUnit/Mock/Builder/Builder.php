@@ -61,7 +61,7 @@ class Builder
     protected function getProvisioner()
     {
         if (is_null($this->provisioner)) {
-            $provisionerClassName = '';
+            $provisionerClassName = __NAMESPACE__ . "\\Provisioner" . $this->className;
 
             if (false === class_exists($provisionerClassName)) {
                 throw new \OutOfBoundsException(
