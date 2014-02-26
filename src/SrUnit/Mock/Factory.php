@@ -4,6 +4,7 @@ namespace SrUnit\Mock;
 
 use Mockery;
 use SrUnit\Bootstrap;
+use SrUnit\Mock\Builder\Builder;
 
 /**
  * Class Factory
@@ -57,5 +58,16 @@ class Factory extends Mockery
         Registry::set($className, $mock);
 
         return $mock;
+    }
+
+    /**
+     * Returns Builder for given class-name
+     *
+     * @param string $className
+     * @return Builder
+     */
+    public function getBuilder($className)
+    {
+        return new Builder($className);
     }
 }
