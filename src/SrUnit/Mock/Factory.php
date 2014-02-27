@@ -67,7 +67,7 @@ class Factory extends Mockery
 
     /**
      * @param Mockery\mock $mock
-     * @param $className
+     * @param string $className
      * @return Builder\oxBase
      */
     public static function getProvisionedMock(\Mockery\mock $mock, $className)

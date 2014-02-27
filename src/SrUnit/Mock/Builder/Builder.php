@@ -3,6 +3,7 @@
 namespace SrUnit\Mock\Builder;
 
 use SrUnit\Mock\Factory;
+use OutOfBoundsException;
 
 /**
  * Class Builder
@@ -14,9 +15,6 @@ use SrUnit\Mock\Factory;
  */
 class Builder
 {
-    /** @var bool */
-    protected $isMockingEnabled = true;
-
     /** @var AbstractProvisioner */
     protected $provisioner;
 
@@ -41,17 +39,6 @@ class Builder
         return $object;
     }
 
-
-    /**
-     * @return \Mockery\Mock
-     */
-    public function getObjectList()
-    {
-        $list = Factory::mock('\oxList')->shouldDeferMissing();
-
-        return $list;
-    }
-
     /**
      * Returns provisioner for specific class-name
      *
@@ -61,10 +48,10 @@ class Builder
     public function getProvisioner()
     {
         if (is_null($this->provisioner)) {
-            $provisionerClassName = __NAMESPACE__ . "\\Provisioner" . $this->className;
+            $provisionerClassName = __NAMESPACE__ . "\\Provisioner" . $this->className . 'Provisioner';
 
             if (false === class_exists($provisionerClassName)) {
-                throw new \OutOfBoundsException(
+                throw new OutOfBoundsException(
                     sprintf('Could not load provisioner "%s".', $provisionerClassName)
                 );
             }
