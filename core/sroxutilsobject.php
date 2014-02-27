@@ -19,7 +19,7 @@ class SrOxUtilsObject extends SrOxUtilsObject_parent
 {
 
     /**
-     *
+     * Get instance
      *
      * @internal Overriden to bypass instance caching
      * @param $sClassName
@@ -46,6 +46,8 @@ class SrOxUtilsObject extends SrOxUtilsObject_parent
     }
 
     /**
+     * Get mock object from registry
+     *
      * @param $className
      * @param $aArgs
      * @return mixed
@@ -59,5 +61,25 @@ class SrOxUtilsObject extends SrOxUtilsObject_parent
         } else {
             throw new \SrUnit\Mock\Exception('Class does not implement \Mockery\MockInterface');
         }
+    }
+
+    /**
+     * Manipulate class chain
+     *
+     * @param array $aClassChain
+     * @return array
+     */
+    protected function _getActiveModuleChain($aClassChain)
+    {
+        $aClassChain = parent::_getActiveModuleChain($aClassChain);
+        $aClassChain = array_filter(
+            $aClassChain,
+            function ($item) use (&$aClassChain) {
+                // whatever
+                return true;
+            }
+        );
+
+        return $aClassChain;
     }
 } 
