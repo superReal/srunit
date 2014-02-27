@@ -142,7 +142,36 @@ class Bootstrap
             if (file_exists($path)) {
                 require_once $path;
                 $this->isOxidLoaded = true;
+                // @todo this has to be depended of certain criteria, thus outcommented current
+//                $this->activateSrUnit();
+//                register_shutdown_function(array($this, 'deactivateSrUnit'));
             }
+        }
+    }
+
+    /**
+     * @todo check if this works as expected
+     */
+    private function activateSrUnit()
+    {
+        // Add named constant required for oxid factory extension
+        define('SRUNIT_TESTS', true);
+        $module = new \oxModule();
+        $module->load('srunit');
+        if (false === $module->isActive()) {
+            $module->activate();
+        }
+    }
+
+    /**
+     * @todo check if this works as expected
+     */
+    public function deactivateSrUnit()
+    {
+        $module = new \oxModule();
+        $module->load('srunit');
+        if (true === $module->isActive()) {
+            $module->deactivate();
         }
     }
 
@@ -163,7 +192,7 @@ class Bootstrap
         if (false === isset($aModule['files'])) {
             return;
         }
-        $customLoader = function($className) use ($aModule) {
+        $customLoader = function ($className) use ($aModule) {
             $className = strtolower($className);
 
             if (isset($aModule['files'][$className])) {
