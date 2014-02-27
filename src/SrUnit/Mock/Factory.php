@@ -42,9 +42,10 @@ class Factory extends Mockery
 
     /**
      * @param $className
+     * @param bool $useProvisioner
      * @return \Mockery\Mock
      */
-    public static function mockOxidAware($className)
+    public static function mockOxidAware($className, $useProvisioner = false)
     {
         if (null === self::$sroxutilsobject) {
             // Get real and extended oxutilsobject instance
@@ -54,10 +55,24 @@ class Factory extends Mockery
         $chainedClassName = self::$sroxutilsobject->getClassName(strtolower($className));
         // Mock chained class partial
         $mock = self::mock($chainedClassName)->shouldDeferMissing();
+        // if flag is set provide mock with default data
+        if ($useProvisioner) {
+            $mock = self::getProvisionedMock($mock, $className);
+        }
         // Set mock into registry used by sroxutilsobject class, use original classname as key
         Registry::set($className, $mock);
 
         return $mock;
+    }
+
+    /**
+     * @param Mockery\mock $mock
+     * @param $className
+     * @return Builder\oxBase
+     */
+    public static function getProvisionedMock(\Mockery\mock $mock, $className)
+    {
+        return self::createBuilder($className)->getProvisioner()->apply($mock);
     }
 
     /**
