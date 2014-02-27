@@ -58,7 +58,7 @@ class Builder
      * @return AbstractProvisioner
      * @throws \OutOfBoundsException
      */
-    protected function getProvisioner()
+    public function getProvisioner()
     {
         if (is_null($this->provisioner)) {
             $provisionerClassName = __NAMESPACE__ . "\\Provisioner" . $this->className;
