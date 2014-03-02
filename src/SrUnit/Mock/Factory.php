@@ -15,14 +15,18 @@ use SrUnit\Mock\Builder\Builder;
  * @author Jens Wiese <j.wiese AT superreal.de>
  * @author Thomas Oppelt <t.oppelt AT superreal.de>
  */
-class Factory extends Mockery
+class Factory
 {
     /**
-     * Holds extended oxutilsobject factory
+     * Proxy methods that delegates call to MockeryProxy
      *
-     * @var null|\SrOxUtilsObject
+     * @return mixed
      */
-    protected static $sroxutilsobject = null;
+    public static function mock()
+    {
+        $args = func_get_args();
+        return call_user_func_array(array(__NAMESPACE__ . '\MockeryProxy', 'mock'), $args);
+    }
 
     /**
      * Mocks _parent-class of used for multiinheritance in Oxid
