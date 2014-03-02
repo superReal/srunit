@@ -33,13 +33,6 @@ class MockeryProxy extends Mockery
     protected static $_generator;
 
     /**
-     * Holds extended oxutilsobject factory
-     *
-     * @var null|\SrOxUtilsObject
-     */
-    protected static $sroxutilsobject = null;
-
-    /**
      * @return Mockery\MockInterface | MockGenerator\CustomMockInterface
      */
     public static function mock()

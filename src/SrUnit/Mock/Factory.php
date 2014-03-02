@@ -18,6 +18,13 @@ use SrUnit\Mock\Builder\Builder;
 class Factory
 {
     /**
+     * Holds extended oxutilsobject factory
+     *
+     * @var null|\SrOxUtilsObject
+     */
+    protected static $sroxutilsobject = null;
+
+    /**
      * Proxy methods that delegates call to MockeryProxy
      *
      * @return mixed
