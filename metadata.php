@@ -20,7 +20,8 @@ $aModule = array(
     'url' => 'http://www.supereal.de',
     'email' => 'it@superreal.de',
     'extend' => array(
-        'oxutilsobject' => 'srunit/core/sroxutilsobject'
+        'oxutilsobject' => 'srunit/core/sroxutilsobject',
+        'oxutilsserver' => 'srunit/core/srunitoxutilsserver',
     ),
     'files' => array(),
     'blocks' => array(),
