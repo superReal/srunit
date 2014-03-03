@@ -74,34 +74,26 @@ class CustomMock implements CustomMockInterface
     {
         $container = new \stdClass();
         $container->data = $data;
-        $container->position = 0;
 
-        $this->mock->shouldReceive('offsetExists')->andReturnUsing(function($offset) use ($data) {
-            return isset($data[$offset]);
+        $this->mock->shouldReceive('offsetExists')->andReturnUsing(function($offset) use ($container) {
+            return isset($container->data[$offset]);
         });
 
-        $this->mock->shouldReceive('offsetGet')->andReturnUsing(function($offset) use ($data) {
-            return isset($data[$offset]) ? $data[$offset] : null;
+        $this->mock->shouldReceive('offsetGet')->andReturnUsing(function($offset) use ($container) {
+            return isset($container->data[$offset]) ? $container->data[$offset] : null;
         });
-//
-//
-//
-//        public function offsetSet($offset, $value) {
-//        if (is_null($offset)) {
-//            $this->container[] = $value;
-//        } else {
-//            $this->container[$offset] = $value;
-//        }
-//    }
-//        public function offsetExists($offset) {
-//        return isset($this->container[$offset]);
-//    }
-//        public function offsetUnset($offset) {
-//        unset($this->container[$offset]);
-//    }
-//        public function offsetGet($offset) {
-//        return isset($this->container[$offset]) ? $this->container[$offset] : null;
-//    }
+
+        $this->mock->shouldReceive('offsetSet')->andReturnUsing(function($offset, $value) use ($container) {
+            if (is_null($offset)) {
+                $container->data[] = $value;
+            } else {
+                $container->data[$offset] = $value;
+            }
+        });
+
+        $this->mock->shouldReceive('offsetUnset')->andReturnUsing(function($offset) use ($container) {
+            unset($container->data[$offset]);
+        });
 
         return $this;
     }

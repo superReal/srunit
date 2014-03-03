@@ -31,8 +31,10 @@ class Factory
      */
     public static function mock()
     {
-        $args = func_get_args();
-        return call_user_func_array(array(__NAMESPACE__ . '\MockeryProxy', 'mock'), $args);
+        return call_user_func_array(
+            array(__NAMESPACE__ . '\MockeryProxy', 'mock'),
+            func_get_args()
+        );
     }
 
     /**
