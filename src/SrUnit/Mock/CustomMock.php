@@ -41,6 +41,7 @@ class CustomMock implements CustomMockInterface
     {
         $iterator = new \stdClass();
         $iterator->data = $data;
+        // @todo: do not use position
         $iterator->position = 0;
 
         $this->mock->shouldReceive('count')->andReturn(count($iterator->data));
@@ -70,7 +71,7 @@ class CustomMock implements CustomMockInterface
     /**
      * @inheritdoc
      */
-    public function provideArrayAccess(array $data)
+    public function implementsArrayAccess(array $data)
     {
         $container = new \stdClass();
         $container->data = $data;

@@ -18,6 +18,6 @@ interface CustomMockInterface
      * @param array $data
      * @return CustomMockInterface
      */
-    public function provideArrayAccess(array $data);
+    public function implementsArrayAccess(array $data);
 
 } 
