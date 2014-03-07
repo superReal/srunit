@@ -12,13 +12,23 @@ use SrOxUtilsObject;
  * Class Factory
  *
  * @link http://www.superReal.de
- * @copyright (C) superReal GmbH | Agentur für Neue Kommunikation
+ * @copyright (C) superReal GmbH | Create Commerce
  * @package SrUnit\Mock
  * @author Jens Wiese <j.wiese AT superreal.de>
  * @author Thomas Oppelt <t.oppelt AT superreal.de>
  */
 class Factory
 {
+    /**
+     * @var MockeryProxy
+     */
+    protected $mockeryProxy;
+
+    /**
+     * @var Registry
+     */
+    protected $registry;
+
     /**
      * Holds class-name of class to mock
      *
@@ -53,7 +63,7 @@ class Factory
     /**
      * @var bool
      */
-    protected $shouldBeRegisteredForOxid = false;
+    protected $shouldBeRegisteredForOxidFactory = false;
 
     /**
      * @var bool
@@ -90,15 +100,58 @@ class Factory
     }
 
     /**
+     * @param MockeryProxy $proxy
+     * @return $this
+     */
+    public function setMockery(MockeryProxy $proxy)
+    {
+        $this->mockeryProxy = $proxy;
+
+        return $this;
+    }
+
+    /**
+     * @return MockeryProxy
+     */
+    public function getMockery()
+    {
+        if (is_null($this->mockeryProxy)) {
+            $this->mockeryProxy = new MockeryProxy();
+        }
+
+        return $this->mockeryProxy;
+    }
+
+    /**
+     * @param \SrUnit\Mock\Registry $registry
+     */
+    public function setRegistry($registry)
+    {
+        $this->registry = $registry;
+    }
+
+    /**
+     * @return \SrUnit\Mock\Registry
+     */
+    public function getRegistry()
+    {
+        if (is_null($this->registry)) {
+            $this->registry = new Registry();
+        }
+
+        return $this->registry;
+    }
+
+    /**
      * Returns mock-object
      *
      * @return Mockery\MockInterface|CustomMockInterface
      */
     public function getMock()
     {
-        $this->mockObject = $this->mock($this->getMockTargets());
+        $this->mockObject = $this->getMockery()->getMock($this->getMockTargets());
 
-        if ($this->shouldBeRegisteredForOxid) {
+        if ($this->shouldBeRegisteredForOxidFactory) {
             $this->mockObject->shouldDeferMissing();
             Registry::set($this->originalClassName, $this->mockObject);
         }
@@ -115,7 +168,7 @@ class Factory
     /**
      * Enables mocking of _parent class for OXID multi-inheritance
      *
-     * @return Mockery\MockInterface
+     * @return $this
      */
     public function extendsOxidParentClass()
     {
@@ -157,14 +210,14 @@ class Factory
      *
      * @return $this
      */
-    public function registerOxidObject()
+    public function registerForOxidFactory()
     {
         if (null === $this->sroxutilsobject) {
             $this->sroxutilsobject = \oxNew('GetSrOxUtilsObject');
         }
 
         $this->mockClassName = self::$sroxutilsobject->getClassName(strtolower($this->originalClassName));
-        $this->shouldRegisterOxidObject = true;
+        $this->shouldBeRegisteredForOxidFactory = true;
 
         return $this;
     }
@@ -210,7 +263,15 @@ class Factory
             $hasMethod = method_exists($this->mockObject, $methodName);
             $hasData = isset($this->mockInterfaceData[$interfaceName]);
 
-            if ($hasMethod && $hasData) {
+            if ($hasData && false === $hasMethod) {
+                throw new Exception(
+                    sprintf(
+                        "Could not apply data for interface '%s'. Method '%s' does not exists on Mock.",
+                        $interfaceName,
+                        $methodName
+                    )
+                );
+            } elseif ($hasMethod && $hasData) {
                 $this->mockObject->$methodName(
                     $this->mockInterfaceData[$interfaceName]
                 );
@@ -233,18 +294,5 @@ class Factory
         }
 
         return $targets;
-    }
-
-    /**
-     * Proxy methods that delegates call to MockeryProxy
-     *
-     * @return mixed
-     */
-    protected function mock()
-    {
-        return call_user_func_array(
-            array(__NAMESPACE__ . '\MockeryProxy', 'mock'),
-            func_get_args()
-        );
     }
 }

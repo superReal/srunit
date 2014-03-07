@@ -87,4 +87,15 @@ class MockeryProxy extends Mockery
 
         return $generator;
     }
+
+    /**
+     * Method acts as proxy method to mock-object.
+     *
+     * @return mixed
+     */
+    public function getMock()
+    {
+        $args = func_get_args();
+        return call_user_func_array(array('\MockeryProxy', 'mock'), $args);
+    }
 }
