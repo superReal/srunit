@@ -21,14 +21,14 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     /** @var Mockery\MockInterface | Registry */
     protected $registry;
 
-    /** @var Mockery\MockInterface | \oxUtilsObject */
+    /** @var Mockery\MockInterface | \SrOxUtilsObject */
     protected $oxUtilsObject;
 
     protected function setUp()
     {
         $this->mockeryProxy = Mockery::mock('\SrUnit\Mock\MockeryProxy');
         $this->registry = Mockery::mock('\SrUnit\Mock\Registry');
-        $this->oxUtilsObject = Mockery::mock('\oxUtilsObject');
+        $this->oxUtilsObject = Mockery::mock('\SrOxUtilsObject');
     }
 
     protected function tearDown()
@@ -41,7 +41,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->mockeryProxy->shouldReceive('getMock')->with('TestClass')->once();
 
         Factory::create('TestClass')
-            ->setMockery($this->mockeryProxy)
+            ->setMockeryProxy($this->mockeryProxy)
             ->getMock();
     }
 
@@ -61,7 +61,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->mockeryProxy->shouldReceive('getMock')->with('TestClass, \Iterator, \ArrayAccess')->once();
 
         Factory::create('TestClass')
-            ->setMockery($this->mockeryProxy)
+            ->setMockeryProxy($this->mockeryProxy)
             ->implementsInterface('\Iterator')
             ->implementsInterface('\ArrayAccess')
             ->getMock();
@@ -76,7 +76,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->oxUtilsObject->shouldReceive('getClassName')->with('testclass')->once();
 
         Factory::create('TestClass')
-            ->setMockery($this->mockeryProxy)
+            ->setMockeryProxy($this->mockeryProxy)
             ->setRegistry($this->registry)
             ->setOxUtilsObject($this->oxUtilsObject)
             ->registerForOxidFactory()

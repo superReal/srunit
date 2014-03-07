@@ -103,23 +103,11 @@ class Factory
      * @param MockeryProxy $proxy
      * @return $this
      */
-    public function setMockery(MockeryProxy $proxy)
+    public function setMockeryProxy(MockeryProxy $proxy)
     {
         $this->mockeryProxy = $proxy;
 
         return $this;
-    }
-
-    /**
-     * @return MockeryProxy
-     */
-    public function getMockery()
-    {
-        if (is_null($this->mockeryProxy)) {
-            $this->mockeryProxy = new MockeryProxy();
-        }
-
-        return $this->mockeryProxy;
     }
 
     /**
@@ -134,18 +122,6 @@ class Factory
     }
 
     /**
-     * @return \SrUnit\Mock\Registry
-     */
-    public function getRegistry()
-    {
-        if (is_null($this->registry)) {
-            $this->registry = new Registry();
-        }
-
-        return $this->registry;
-    }
-
-    /**
      * @param \SrOxUtilsObject $oxUtilsObject
      * @return $this
      */
@@ -157,25 +133,13 @@ class Factory
     }
 
     /**
-     * @return \SrOxUtilsObject
-     */
-    public function getOxUtilsObject()
-    {
-        if (is_null($this->oxUtilsObject)) {
-            $this->oxUtilsObject = \oxNew('GetSrOxUtilsObject');
-        }
-
-        return $this->oxUtilsObject;
-    }
-
-    /**
      * Returns mock-object
      *
      * @return Mockery\MockInterface|CustomMockInterface
      */
     public function getMock()
     {
-        $this->mockObject = $this->getMockery()->getMock($this->getMockTargetsAsString());
+        $this->mockObject = $this->getMockeryProxy()->getMock($this->getMockTargetsAsString());
 
         if ($this->shouldBeRegisteredForOxidFactory) {
             $this->mockObject->shouldDeferMissing();
@@ -273,6 +237,42 @@ class Factory
         }
 
         return $this->provisioner;
+    }
+
+    /**
+     * @return MockeryProxy
+     */
+    protected function getMockeryProxy()
+    {
+        if (is_null($this->mockeryProxy)) {
+            $this->mockeryProxy = new MockeryProxy();
+        }
+
+        return $this->mockeryProxy;
+    }
+
+    /**
+     * @return \SrUnit\Mock\Registry
+     */
+    protected function getRegistry()
+    {
+        if (is_null($this->registry)) {
+            $this->registry = new Registry();
+        }
+
+        return $this->registry;
+    }
+
+    /**
+     * @return \SrOxUtilsObject
+     */
+    protected function getOxUtilsObject()
+    {
+        if (is_null($this->oxUtilsObject)) {
+            $this->oxUtilsObject = \oxNew('GetSrOxUtilsObject');
+        }
+
+        return $this->oxUtilsObject;
     }
 
     /**
