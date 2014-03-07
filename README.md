@@ -50,7 +50,7 @@ When you call the getMock() method at the end of the method-chain you will get b
 The underlying libraries is Mockery, even if it is not called directly, you will get back the Mock object from Mockery. 
 
 
-###Creating Simple Mocks
+### Creating Simple Mocks
 
 Simple Mock, simple call:
 
@@ -60,7 +60,7 @@ Afterwards you can define the behaviour of the mock by simply use the Mockery me
 
     $mock->shouldReceive('getParam')->andReturn('a-value')
 
-###Testing OXID Extensions
+### Testing OXID Extensions
 
 When it comes to extension of OXID classes (e.g. oxArticle) you mighty need to test whether your implemenation is correct or not. In case you don't need to have the whole OXID stack to test your implementation, you can mock just the _parent class like this:
 
@@ -88,7 +88,7 @@ When you load the OXID framework on boostrap, you have to add the following anno
 Otherwise your tests will die in vain.
 
 
-###Integration Tests with Usage of OXID-Factory
+### Integration Tests with Usage of OXID-Factory
 
 In case you need to test the integration of your module or you'd like to use the OXID factory in order to have the whole stack available, you can use the following call:
 
@@ -99,7 +99,7 @@ In case you need to test the integration of your module or you'd like to use the
 This call will create a mock, and will also register this mock-object to be retrieved on every call of `oxNew('oxArticle')`.
 This pretty usefull when you have dependend classes that make usage of oxNew() calls very often, and you're not able to change this behaviour from the outside.
 
-###Provisioned Mocks
+### Provisioned Mocks
 
 Often you don't want to create mocks, and apply the same behaviour over and over again. For this case you can use provisioning to get back mocks with default values/stubs.
 
@@ -109,7 +109,7 @@ Often you don't want to create mocks, and apply the same behaviour over and over
         
 In some cases this call will lead to an Exception because no provisioner is set up. You need to implement a provisioner on your own then.
 
-###Mocks with Interfaces
+### Mocks with Interfaces
 
 You can define interfaces a mock should implement like this:
 
