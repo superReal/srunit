@@ -42,9 +42,7 @@ class Registry
         if (isset(self::$instances[$className])) {
             return self::$instances[$className];
         } else {
-            //return self::$instances[$className] = Factory::mock($className)->shouldDeferMissing();
             throw new Exception("Mock instance missing for {$className}");
-
         }
     }
 
@@ -58,7 +56,7 @@ class Registry
      *
      * @return null
      */
-    public static function set($className, $instance)
+    public function set($className, $instance)
     {
         $className = strtolower($className);
 
@@ -80,4 +78,4 @@ class Registry
         return array_keys(self::$instances);
     }
 
-} 
+}

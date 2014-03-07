@@ -75,7 +75,7 @@ class Factory
      *
      * @var SrOxUtilsObject
      */
-    protected $sroxutilsobject = null;
+    protected $oxUtilsObject;
 
     /**
      * @var AbstractProvisioner
@@ -124,10 +124,13 @@ class Factory
 
     /**
      * @param \SrUnit\Mock\Registry $registry
+     * @return $this
      */
     public function setRegistry($registry)
     {
         $this->registry = $registry;
+
+        return $this;
     }
 
     /**
@@ -143,17 +146,40 @@ class Factory
     }
 
     /**
+     * @param \SrOxUtilsObject $oxUtilsObject
+     * @return $this
+     */
+    public function setOxUtilsObject($oxUtilsObject)
+    {
+        $this->oxUtilsObject = $oxUtilsObject;
+
+        return $this;
+    }
+
+    /**
+     * @return \SrOxUtilsObject
+     */
+    public function getOxUtilsObject()
+    {
+        if (is_null($this->oxUtilsObject)) {
+            $this->oxUtilsObject = \oxNew('GetSrOxUtilsObject');
+        }
+
+        return $this->oxUtilsObject;
+    }
+
+    /**
      * Returns mock-object
      *
      * @return Mockery\MockInterface|CustomMockInterface
      */
     public function getMock()
     {
-        $this->mockObject = $this->getMockery()->getMock($this->getMockTargets());
+        $this->mockObject = $this->getMockery()->getMock($this->getMockTargetsAsString());
 
         if ($this->shouldBeRegisteredForOxidFactory) {
             $this->mockObject->shouldDeferMissing();
-            Registry::set($this->originalClassName, $this->mockObject);
+            $this->getRegistry()->set($this->originalClassName, $this->mockObject);
         }
 
         if ($this->shouldBeProvisioned) {
@@ -212,11 +238,7 @@ class Factory
      */
     public function registerForOxidFactory()
     {
-        if (null === $this->sroxutilsobject) {
-            $this->sroxutilsobject = \oxNew('GetSrOxUtilsObject');
-        }
-
-        $this->mockClassName = self::$sroxutilsobject->getClassName(strtolower($this->originalClassName));
+        $this->mockClassName = $this->getOxUtilsObject()->getClassName(strtolower($this->originalClassName));
         $this->shouldBeRegisteredForOxidFactory = true;
 
         return $this;
@@ -285,14 +307,16 @@ class Factory
      *
      * @return array
      */
-    protected function getMockTargets()
+    protected function getMockTargetsAsString()
     {
-        $targets = array($this->mockClassName);
+        $targets = array($this->originalClassName);
 
         if ($this->shouldImplementInterfaces()) {
-            $targets = array_merge($targets, array($this->mockInterfaces));
+            $targets = array_merge($targets, $this->mockInterfaces);
         }
 
-        return $targets;
+        $targetString = implode(', ', $targets);
+
+        return $targetString;
     }
 }

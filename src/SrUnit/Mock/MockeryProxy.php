@@ -91,7 +91,7 @@ class MockeryProxy extends Mockery
     /**
      * Method acts as proxy method to mock-object.
      *
-     * @return mixed
+     * @return Mockery\MockInterface
      */
     public function getMock()
     {
