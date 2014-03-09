@@ -24,6 +24,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     /** @var Mockery\MockInterface | \SrOxUtilsObject */
     protected $oxUtilsObject;
 
+    
     protected function setUp()
     {
         $this->mockeryProxy = Mockery::mock('\SrUnit\Mock\MockeryProxy');
@@ -36,13 +37,40 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         Mockery::close();
     }
 
-    public function testCommonMock()
+    /**
+     * @expectedException \SrUnit\Mock\Exception
+     * @expectedExceptionMessage Could not create mock. You have to provide a class-name when using SrUnit\Mock\Factory::create.
+     */
+    public function testTypeCheckOnFactoryCreate()
+    {
+        Factory::create(1234);
+    }
+
+    /**
+     * @expectedException \SrUnit\Mock\Exception
+     * @expectedExceptionMessage Could not create mock. You have to provide an object when using SrUnit\Mock\Factory::createFromObject.
+     */
+    public function testTypeCheckOnFactoryCreateFrom()
+    {
+        Factory::createFromObject('className');
+    }
+
+    public function testSimpleMock()
     {
         $this->mockeryProxy->shouldReceive('getMock')->with('TestClass')->once();
 
         Factory::create('TestClass')
             ->setMockeryProxy($this->mockeryProxy)
             ->getMock();
+    }
+
+    public function testCreatingMockThroughActualMockeryProxy()
+    {
+        $mock = Factory::create('TestClass')->getMock();
+        $mock->shouldReceive('getFoo')->andReturn('bar');
+
+        $this->assertInstanceOf('Mockery\MockInterface', $mock);
+        $this->assertEquals('bar', $mock->getFoo());
     }
 
     /**
@@ -67,6 +95,37 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    public function testMockWhichImplementsIteratorWithData()
+    {
+        $data = array('foo', 'bar', 'barz');
+
+        $dummyMock = Mockery::mock('\SrUnit\Mock\MockGenerator\CustomMockInterface');
+        $dummyMock->shouldReceive('implementsIterator')->with($data)->once();
+        $this->mockeryProxy->shouldReceive('getMock')->andReturn($dummyMock);
+
+        Factory::create('TestClass')
+            ->setMockeryProxy($this->mockeryProxy)
+            ->implementsInterface('\Iterator', $data)
+            ->getMock();
+    }
+
+    /**
+     * @expectedException \SrUnit\Mock\Exception
+     * @expectedExceptionMessage Could not apply data for interface '\Traversable'. Method 'implementsTraversable' does not exists on Mock.
+     */
+    public function testMockWhichImplementsIteratorWithDataButMissingMethod()
+    {
+        $data = array('foo', 'bar', 'barz');
+
+        $dummyMock = Mockery::mock('Dummy');
+        $this->mockeryProxy->shouldReceive('getMock')->andReturn($dummyMock);
+
+        Factory::create('TestClass')
+            ->setMockeryProxy($this->mockeryProxy)
+            ->implementsInterface('\Traversable', $data)
+            ->getMock();
+    }
+
     public function testMockThatShouldBeRegisteredForOxidFactory()
     {
         $dummyMock = Mockery::mock('Dummy');
@@ -83,9 +142,12 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    public function testMockingExistingObject()
+    public function testMockingObject()
     {
-        $this->markTestIncomplete();
+        $dummyObject = new \stdClass;
+
+        $mock = Factory::createFromObject($dummyObject)->getMock();
+        $this->assertInstanceOf('\Mockery\MockInterface', $mock);
+        $this->assertInstanceOf('\stdClass', $mock);
     }
 }
- 

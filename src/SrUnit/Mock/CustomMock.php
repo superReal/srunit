@@ -37,7 +37,7 @@ class CustomMock implements CustomMockInterface
     /**
      * @inheritdoc
      */
-    public function implementsIteratorInterface(array $data)
+    public function implementsIterator(array $data)
     {
         $iterator = new \stdClass();
         $iterator->data = $data;

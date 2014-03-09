@@ -12,7 +12,7 @@ interface CustomMockInterface
      * @param array $data
      * @return CustomMockInterface
      */
-    public function implementsIteratorInterface(array $data);
+    public function implementsIterator(array $data);
 
     /**
      * @param array $data

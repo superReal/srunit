@@ -84,19 +84,44 @@ class Factory
 
     /**
      * @param string $className
+     * @throws Exception
      * @return Factory
      */
     public static function create($className)
     {
+        if (false === is_string($className)) {
+            throw new Exception(
+                'Could not create mock. You have to provide a class-name when using ' . __METHOD__ . '.'
+            );
+        }
+
         return new self($className);
     }
 
     /**
-     * @param string $className
+     * @param object $actualObject
+     * @throws Exception
+     * @return Factory
      */
-    public function __construct($className)
+    public static function createFromObject($actualObject)
+    {
+        if (false === is_object($actualObject)) {
+            throw new Exception(
+                'Could not create mock. You have to provide an object when using ' . __METHOD__ . '.'
+            );
+        }
+
+        return new self(get_class($actualObject), $actualObject);
+    }
+
+    /**
+     * @param string $className
+     * @param object $actualObject
+     */
+    private function __construct($className, $actualObject = null)
     {
         $this->originalClassName = $className;
+        $this->actualObject = $actualObject;
     }
 
     /**
@@ -139,7 +164,11 @@ class Factory
      */
     public function getMock()
     {
-        $this->mockObject = $this->getMockeryProxy()->getMock($this->getMockTargetsAsString());
+        if (is_null($this->actualObject)) {
+            $this->mockObject = $this->getMockeryProxy()->getMock($this->getMockTargetsAsString());
+        } else {
+            $this->mockObject = $this->getMockeryProxy()->getMock($this->actualObject);
+        }
 
         if ($this->shouldBeRegisteredForOxidFactory) {
             $this->mockObject->shouldDeferMissing();
@@ -281,7 +310,9 @@ class Factory
     protected function applyDataForInterfaces()
     {
         foreach ($this->mockInterfaces as $interfaceName) {
-            $methodName = 'implements' . $interfaceName;
+            $interfaceNameWithoutNamespace = explode('\\', $interfaceName);
+            $methodName = 'implements' . array_pop($interfaceNameWithoutNamespace);
+
             $hasMethod = method_exists($this->mockObject, $methodName);
             $hasData = isset($this->mockInterfaceData[$interfaceName]);
 

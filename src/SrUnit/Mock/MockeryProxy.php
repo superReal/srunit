@@ -96,6 +96,6 @@ class MockeryProxy extends Mockery
     public function getMock()
     {
         $args = func_get_args();
-        return call_user_func_array(array('\MockeryProxy', 'mock'), $args);
+        return call_user_func_array(array('\SrUnit\Mock\MockeryProxy', 'mock'), $args);
     }
 }

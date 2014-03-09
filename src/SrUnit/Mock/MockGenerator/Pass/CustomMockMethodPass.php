@@ -45,7 +45,7 @@ class CustomMockMethodPass
     protected function getCustomCode()
     {
         $code = <<<EOT
-            public function implementsIteratorInterface(array \$data)
+            public function implementsIterator(array \$data)
             {
                 \SrUnit\Mock\CustomMock::create(\$this)->implementsIteratorInterface(\$data);
                 return \$this;
