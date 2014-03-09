@@ -1,8 +1,8 @@
 <?php
 
-namespace SrUnit\Mock\Builder;
+namespace SrUnit\Mock;
 
-use Faker\Factory;
+use Faker\Factory as FakerFactory;
 use Faker\Generator;
 use Mockery\MockInterface;
 use oxField;
@@ -32,7 +32,7 @@ abstract class AbstractProvisioner
     public function __construct(Generator $generator = null)
     {
         if (is_null($generator)) {
-            $generator = Factory::create();
+            $generator = FakerFactory::create();
             $generator->seed('12345');
         }
 
@@ -53,8 +53,6 @@ abstract class AbstractProvisioner
         }
 
         $this->applyStubs($object);
-
-        return $object;
     }
 
     /**
@@ -67,7 +65,7 @@ abstract class AbstractProvisioner
     protected function getOxField($value)
     {
         if (class_exists('\oxField')) {
-            $oxField = new oxField($value);
+            $oxField = new \oxField($value);
         } else {
             $oxField = \Mockery::mock('\oxField')->shouldIgnoreMissing();
             $oxField->shouldReceive('getRawValue')->andReturn($value);

@@ -1,9 +1,9 @@
 <?php
 
-namespace SrUnit\Mock\Builder\Provisioner;
+namespace SrUnit\Mock\Provisioner;
 
 use Mockery\MockInterface;
-use SrUnit\Mock\Builder\AbstractProvisioner;
+use SrUnit\Mock\AbstractProvisioner;
 
 /**
  * Class oxArticle

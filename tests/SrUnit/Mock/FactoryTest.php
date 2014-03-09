@@ -24,7 +24,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     /** @var Mockery\MockInterface | \SrOxUtilsObject */
     protected $oxUtilsObject;
 
-    
+
     protected function setUp()
     {
         $this->mockeryProxy = Mockery::mock('\SrUnit\Mock\MockeryProxy');
@@ -149,5 +149,28 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $mock = Factory::createFromObject($dummyObject)->getMock();
         $this->assertInstanceOf('\Mockery\MockInterface', $mock);
         $this->assertInstanceOf('\stdClass', $mock);
+    }
+
+    public function testExtendingOxidParentClass()
+    {
+        $mock = Factory::create('\stdClass')
+            ->extendsOxidParentClass()
+            ->getMock();
+
+        $mock->shouldReceive('getFoo')->andReturn('bar');
+
+        $actualObject = new \stdClass_parent();
+
+        $this->assertInstanceOf('\stdClass_parent', $actualObject);
+        $this->assertEquals('bar', $actualObject->getFoo());
+    }
+
+    public function testProvisioningOxidModel()
+    {
+        $mock = Factory::create('\oxArticle')
+            ->useProvisioning()
+            ->getMock();
+
+        $this->assertInstanceOf('\oxField', $mock->oxarticles__oxid);
     }
 }

@@ -121,6 +121,7 @@ class Factory
     private function __construct($className, $actualObject = null)
     {
         $this->originalClassName = $className;
+        $this->mockClassName = $className;
         $this->actualObject = $actualObject;
     }
 
@@ -218,10 +219,14 @@ class Factory
 
     /**
      * Enables provisioning of mock-object
+     *
+     * @return $this
      */
     public function useProvisioning()
     {
         $this->shouldBeProvisioned = true;
+
+        return $this;
     }
 
     /**
@@ -336,11 +341,11 @@ class Factory
      * Returns targets for mock-creation (e.g. class-name and/or
      * interface names as defined) to hand over to Mockery
      *
-     * @return array
+     * @return string
      */
     protected function getMockTargetsAsString()
     {
-        $targets = array($this->originalClassName);
+        $targets = array($this->mockClassName);
 
         if ($this->shouldImplementInterfaces()) {
             $targets = array_merge($targets, $this->mockInterfaces);
