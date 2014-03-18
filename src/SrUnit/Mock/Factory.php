@@ -190,7 +190,7 @@ class Factory
      *
      * @return $this
      */
-    public function extendsOxidParentClass()
+    public function isOxidParentClass()
     {
         $this->mockClassName = 'overload:' . $this->originalClassName . '_parent';
 

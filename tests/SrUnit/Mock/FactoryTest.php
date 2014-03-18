@@ -154,7 +154,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     public function testExtendingOxidParentClass()
     {
         $mock = Factory::create('\stdClass')
-            ->extendsOxidParentClass()
+            ->isOxidParentClass()
             ->getMock();
 
         $mock->shouldReceive('getFoo')->andReturn('bar');

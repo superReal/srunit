@@ -72,7 +72,7 @@ Afterwards you can define the behaviour of the mock by simply use the Mockery me
 When it comes to extension of OXID classes (e.g. oxArticle) you mighty need to test whether your implemenation is correct or not. In case you don't need to have the whole OXID stack to test your implementation, you can mock just the _parent class like this:
 
     $mock = Factory::create('\SrMyExtensionOxArticle')
-        ->extendsOxidParentClass()
+        ->isOxidParentClass()
         ->getMock();
 
 Be aware that this call will actually define a class `SrMyExtensionOxArticle_parent` with the behaviour you will apply on it. 
