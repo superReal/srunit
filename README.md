@@ -25,7 +25,14 @@ Add phpunit.xml to module-root with at least the following content:
             <directory>./tests</directory>
         </testsuite>
       </testsuites>
+      <listeners>
+        <listener
+            class='SrUnit\Adapter\Phpunit\TestListener'
+            file='./../srunit/src/SrUnit/Adapter/Phpunit/TestListener.php'/>
+      </listeners>
     </phpunit>
+    
+**Note:** Adding the `TestListener` has the effect, that after each test the expectations are verified.
 
 ### Bootstrap
 
