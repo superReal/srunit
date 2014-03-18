@@ -55,7 +55,7 @@ class SrOxUtilsObject extends SrOxUtilsObject_parent
      */
     protected function _getMockObject($className, $aArgs)
     {
-        $mock = \SrUnit\Mock\Registry::get($className);
+        $mock = \SrUnit\Mock\Registry::getInstance()->get($className);
         if ($mock instanceof \Mockery\MockInterface) {
             return $mock;
         } else {

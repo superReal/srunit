@@ -38,7 +38,7 @@ class SrOxArticle1Test extends TestCase
      */
     public function testGetArticleFiles()
     {
-        $mock = \SrUnit\Mock\Registry::get('oxArticle');
+        $mock = \SrUnit\Mock\Registry::getInstance()->get('oxArticle');
 
         $actualValue = $mock->getArticleFiles()->offsetGet(0);
         $expectedValue = 'faked file';

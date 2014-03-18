@@ -291,7 +291,7 @@ class Factory
     protected function getRegistry()
     {
         if (is_null($this->registry)) {
-            $this->registry = new Registry();
+            $this->registry = Registry::getInstance();
         }
 
         return $this->registry;

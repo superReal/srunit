@@ -1,4 +1,7 @@
 <?php
+
+namespace SrUnit\Mock;
+
 /**
  * Class Registry
  *
@@ -14,20 +17,30 @@
  * @copyright (C) superReal 2014
  * @author    Thomas Oppelt <t.oppelt _AT_ superreal.de>
  */
-
-namespace SrUnit\Mock;
-
-
 class Registry
 {
+
+    /** @var Registry */
+    protected static $instance;
 
     /**
      * Instance array
      *
      * @var array
      */
-    protected static $instances = array();
+    protected $registeredInstances = array();
 
+    /**
+     * @return Registry
+     */
+    public static function getInstance()
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new Registry();
+        }
+
+        return static::$instance;
+    }
 
     /**
      * Instance getter
@@ -36,11 +49,11 @@ class Registry
      * @return \Mockery\Mock
      * @throws Exception
      */
-    public static function get($className)
+    public function get($className)
     {
         $className = strtolower($className);
-        if (isset(self::$instances[$className])) {
-            return self::$instances[$className];
+        if (isset($this->registeredInstances[$className])) {
+            return $this->registeredInstances[$className];
         } else {
             throw new Exception("Mock instance missing for {$className}");
         }
@@ -61,11 +74,19 @@ class Registry
         $className = strtolower($className);
 
         if (is_null($instance)) {
-            unset(self::$instances[$className]);
+            unset($this->registeredInstances[$className]);
             return;
         }
 
-        self::$instances[$className] = $instance;
+        $this->registeredInstances[$className] = $instance;
+    }
+
+    /**
+     * Reset all registered instances
+     */
+    public function resetAll()
+    {
+        $this->registeredInstances = array();
     }
 
     /**
@@ -73,9 +94,8 @@ class Registry
      *
      * @return array
      */
-    public static function getKeys()
+    public function getKeys()
     {
-        return array_keys(self::$instances);
+        return array_keys($this->registeredInstances);
     }
-
 }
