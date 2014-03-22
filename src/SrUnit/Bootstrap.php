@@ -27,6 +27,9 @@ class Bootstrap
     /** @var bool */
     protected $isOxidMandatory = false;
 
+    /** @var bool  */
+    protected $isOxidBypassed = false;
+
 
     /**
      * Creates new Bootstrap object
@@ -43,8 +46,19 @@ class Bootstrap
      */
     private function __construct()
     {
-        $this->shopBaseDir = __DIR__ . '/../../../../';
-        $this->moduleDir = getcwd();
+        $testDir = $this->retrieveTestDirectory();
+        $this->shopBaseDir = realpath($testDir . '/../../../');
+        $this->moduleDir = realpath($testDir . '/../');
+
+        register_shutdown_function(array($this, 'deactivateSrUnit'));
+    }
+
+    /**
+     * Destructor
+     */
+    public function __destruct()
+    {
+        $this->deactivateSrUnit();
     }
 
     /**
@@ -59,18 +73,13 @@ class Bootstrap
         return $this;
     }
 
-    /**
-     * Set module-dir if needed, otherwise the
-     * current work-directory is taken.
-     *
-     * @param string $moduleDir
-     * @return $this
-     */
-    public function setModuleDir($moduleDir)
+    public function bypassOxid()
     {
-        $this->moduleDir = rtrim($moduleDir, '/');
+        if ($this->isOxidLoaded()) {
+            $this->activateSrUnit();
+        }
 
-        return $this;
+        $this->isOxidBypassed = true;
     }
 
     /**
@@ -120,6 +129,34 @@ class Bootstrap
     }
 
     /**
+     * @return $this
+     */
+    public function activateSrUnit()
+    {
+        define('SRUNIT_TESTS', true);
+
+        $module = new \oxModule();
+        $module->load('srunit');
+        if (false === $module->isActive()) {
+            $module->activate();
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     */
+    public function deactivateSrUnit()
+    {
+        $module = new \oxModule();
+        $module->load('srunit');
+        if (true === $module->isActive()) {
+            $module->deactivate();
+        }
+    }
+
+    /**
      * Bootstraps composer-autoloader
      */
     private function loadComposerAutoloader()
@@ -142,36 +179,11 @@ class Bootstrap
             if (file_exists($path)) {
                 require_once $path;
                 $this->isOxidLoaded = true;
-                // @todo this has to be depended of certain criteria, thus outcommented current
-//                $this->activateSrUnit();
-//                register_shutdown_function(array($this, 'deactivateSrUnit'));
+
+                if ($this->isOxidBypassed()) {
+                    $this->activateSrUnit();
+                }
             }
-        }
-    }
-
-    /**
-     * @todo check if this works as expected
-     */
-    private function activateSrUnit()
-    {
-        // Add named constant required for oxid factory extension
-        define('SRUNIT_TESTS', true);
-        $module = new \oxModule();
-        $module->load('srunit');
-        if (false === $module->isActive()) {
-            $module->activate();
-        }
-    }
-
-    /**
-     * @todo check if this works as expected
-     */
-    public function deactivateSrUnit()
-    {
-        $module = new \oxModule();
-        $module->load('srunit');
-        if (true === $module->isActive()) {
-            $module->deactivate();
         }
     }
 
@@ -206,5 +218,19 @@ class Bootstrap
         };
 
         spl_autoload_register($customLoader);
+    }
+
+    /**
+     * Returns test directory where Bootstrap class is called from.
+     *
+     * @return string
+     */
+    private function retrieveTestDirectory()
+    {
+        $trace = debug_backtrace();
+        $firstTraceEntry = array_pop($trace);
+        $testDirectory = dirname($firstTraceEntry['file']);
+
+        return $testDirectory;
     }
 } 
