@@ -4,6 +4,7 @@ namespace SrUnit;
 
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
+use SrUnit\Bootstrap\DirectoryFinder;
 
 /**
  * Class Bootstrap
@@ -17,6 +18,9 @@ class Bootstrap
 {
     /** @var string */
     protected $shopBaseDir;
+
+    /** @var string */
+    protected $testDir;
 
     /** @var  ClassLoader */
     protected $composerClassLoader;
@@ -34,21 +38,22 @@ class Bootstrap
     /**
      * Creates new Bootstrap object
      *
+     * @param string $testDir
      * @return Bootstrap
      */
-    public static function create()
+    public static function create($testDir = null)
     {
-        return new self();
+        return new self($testDir);
     }
 
     /**
-     * Constructor
+     * @param string $testDir
      */
-    private function __construct()
+    private function __construct($testDir = null)
     {
-        $testDir = $this->retrieveTestDirectory();
-        $this->shopBaseDir = realpath($testDir . '/../../../');
-        $this->moduleDir = realpath($testDir . '/../');
+        $finder = $this->getDirectoryFinder($testDir);
+        $this->shopBaseDir = $finder->getShopBaseDir();
+        $this->moduleDir = $finder->getModuleDir();
 
         register_shutdown_function(array($this, 'deactivateSrUnit'));
     }
@@ -221,16 +226,11 @@ class Bootstrap
     }
 
     /**
-     * Returns test directory where Bootstrap class is called from.
-     *
-     * @return string
+     * @param $testDir
+     * @return DirectoryFinder
      */
-    private function retrieveTestDirectory()
+    protected function getDirectoryFinder($testDir)
     {
-        $trace = debug_backtrace();
-        $firstTraceEntry = array_pop($trace);
-        $testDirectory = dirname($firstTraceEntry['file']);
-
-        return $testDirectory;
+        return new DirectoryFinder($testDir);
     }
-} 
+}
