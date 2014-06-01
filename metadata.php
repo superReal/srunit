@@ -15,7 +15,7 @@ $aModule = array(
         'en' => 'sR Unit Extension',
     ),
     'thumbnail' => 'superreal.png',
-    'version' => '1.0',
+    'version' => '0.9-dev',
     'author' => 'superReal GmbH',
     'url' => 'http://www.supereal.de',
     'email' => 'it@superreal.de',
