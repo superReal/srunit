@@ -4,6 +4,14 @@ namespace SrUnit\Bootstrap;
 
 use org\bovigo\vfs\vfsStream;
 
+/**
+ * Test for class DirectoryFinderTest
+ *
+ * @link http://www.superReal.de
+ * @copyright (C) superReal GmbH | Create Commerce
+ * @package SrUnit\Bootstrap
+ * @author Jens Wiese <j.wiese AT superreal.de>
+ */
 class DirectoryFinderTest extends \PHPUnit_Framework_TestCase
 {
     /**
