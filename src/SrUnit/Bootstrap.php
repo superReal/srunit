@@ -2,37 +2,35 @@
 
 namespace SrUnit;
 
+use SrUnit\Bootstrap\DirectoryFinder;
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
-use SrUnit\Bootstrap\DirectoryFinder;
+use SrUnit\Bootstrap\SrUnitModule;
 
 /**
  * Class Bootstrap
  *
  * @link http://www.superReal.de
- * @copyright (C) superReal GmbH | Agentur für Neue Kommunikation
+ * @copyright (C) superReal GmbH | Create Commerce
  * @package superreal/srunit
  * @author Jens Wiese <j.wiese AT superreal.de>
  */
 class Bootstrap
 {
-    /** @var string */
-    protected $shopBaseDir;
-
-    /** @var string */
-    protected $testDir;
+    /** @var DirectoryFinder */
+    protected $directoryFinder;
 
     /** @var  ClassLoader */
     protected $composerClassLoader;
 
     /** @var bool */
-    protected $isOxidLoaded = false;
+    protected $isOXIDLoaded = false;
 
     /** @var bool */
-    protected $isOxidMandatory = false;
+    protected $isOXIDMandatory = false;
 
     /** @var bool  */
-    protected $isOxidBypassed = false;
+    protected $isOXIDBypassed = false;
 
 
     /**
@@ -51,11 +49,9 @@ class Bootstrap
      */
     private function __construct($testDir = null)
     {
-        $finder = $this->getDirectoryFinder($testDir);
-        $this->shopBaseDir = $finder->getShopBaseDir();
-        $this->moduleDir = $finder->getModuleDir();
+        $this->directoryFinder = $this->getDirectoryFinder($testDir);
 
-        register_shutdown_function(array($this, 'deactivateSrUnit'));
+        register_shutdown_function(array('SrUnitModule', 'deactivateSrUnit'));
     }
 
     /**
@@ -63,28 +59,46 @@ class Bootstrap
      */
     public function __destruct()
     {
-        $this->deactivateSrUnit();
+        SrUnitModule::deactivate();
     }
 
     /**
-     * Enable loading of Oxid bootstrapping
+     * Enable loading of OXID bootstrapping
      *
      * @return $this
      */
-    public function makeOxidMandatory()
+    public function loadOXID()
     {
-        $this->isOxidMandatory = true;
+        $this->isOXIDMandatory = true;
 
         return $this;
     }
 
-    public function bypassOxid()
+    /**
+     * Enable bypassing OXID (e.g. needed for overriding oxNew())
+     *
+     * @return $this
+     */
+    public function bypassOXID()
     {
-        if ($this->isOxidLoaded()) {
-            $this->activateSrUnit();
+        if ($this->isOXIDLoaded()) {
+            SrUnitModule::activate();
         }
 
-        $this->isOxidBypassed = true;
+        $this->isOXIDBypassed = true;
+
+        return $this;
+    }
+
+    /**
+     * Enable emulation of standard OXID functionalities
+     *
+     * @throws \InvalidArgumentException
+     * @return $this
+     */
+    public function emulateOXID()
+    {
+        throw new \InvalidArgumentException(__METHOD__  . ' not implemented yet.');
     }
 
     /**
@@ -95,22 +109,22 @@ class Bootstrap
     public function bootstrap()
     {
         $this->loadComposerAutoloader();
-        $this->loadOxidFramework();
+        $this->loadOXIDFramework();
         $this->registerModuleAutoloader();
 
-        if ($this->isOxidMandatory() && !$this->isOxidLoaded()) {
-            throw new RuntimeException('Could not bootstrap test environment, due to a not loaded Oxid framework.');
+        if ($this->isOXIDMandatory() && !$this->isOXIDLoaded()) {
+            throw new RuntimeException('Could not bootstrap test environment, due to a not loaded OXID framework.');
         }
     }
 
     /**
-     * Returns whether or not Oxid framework is set mandatory
+     * Returns whether or not OXID framework is set mandatory
      *
      * @return bool
      */
-    public function isOxidMandatory()
+    protected function isOXIDMandatory()
     {
-        return $this->isOxidMandatory;
+        return $this->isOXIDMandatory;
     }
 
     /**
@@ -118,9 +132,19 @@ class Bootstrap
      *
      * @return bool
      */
-    public function isOxidLoaded()
+    protected function isOXIDLoaded()
     {
-        return $this->isOxidLoaded;
+        return $this->isOXIDLoaded;
+    }
+
+    /**
+     * Returns whether or not OXID framework is bypassed
+     *
+     * @return bool
+     */
+    protected function isOXIDBypassed()
+    {
+        return $this->isOXIDBypassed();
     }
 
     /**
@@ -128,45 +152,17 @@ class Bootstrap
      *
      * @return ClassLoader
      */
-    public function getComposerClassLoader()
+    protected function getComposerClassLoader()
     {
         return $this->composerClassLoader;
     }
 
     /**
-     * @return $this
-     */
-    public function activateSrUnit()
-    {
-        define('SRUNIT_TESTS', true);
-
-        $module = new \oxModule();
-        $module->load('srunit');
-        if (false === $module->isActive()) {
-            $module->activate();
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     */
-    public function deactivateSrUnit()
-    {
-        $module = new \oxModule();
-        $module->load('srunit');
-        if (true === $module->isActive()) {
-            $module->deactivate();
-        }
-    }
-
-    /**
      * Bootstraps composer-autoloader
      */
-    private function loadComposerAutoloader()
+    protected function loadComposerAutoloader()
     {
-        $path = $this->shopBaseDir . 'vendor/autoload.php';
+        $path = $this->directoryFinder->getVendorDir() . '/autoload.php';
 
         if (file_exists($path)) {
             $this->composerClassLoader = require $path;
@@ -174,18 +170,18 @@ class Bootstrap
     }
 
     /**
-     * Boostraps Oxid
+     * Boostraps OXID
      */
-    private function loadOxidFramework()
+    protected function loadOXIDFramework()
     {
-        if ($this->isOxidMandatory()) {
-            $path = $this->shopBaseDir . 'bootstrap.php';
+        if ($this->isOXIDMandatory()) {
+            $path = $this->directoryFinder->getShopBaseDir() . 'bootstrap.php';
 
             if (file_exists($path)) {
                 require_once $path;
-                $this->isOxidLoaded = true;
+                $this->isOXIDLoaded = true;
 
-                if ($this->isOxidBypassed()) {
+                if ($this->isOXIDBypassed()) {
                     $this->activateSrUnit();
                 }
             }
@@ -196,9 +192,9 @@ class Bootstrap
      * Bootstraps all files defined in metadata.php
      * of current module
      */
-    private function registerModuleAutoloader()
+    protected function registerModuleAutoloader()
     {
-        $metadataFilePath = $this->moduleDir . '/metadata.php';
+        $metadataFilePath = $this->directoryFinder->getModuleDir() . '/metadata.php';
 
         if (false === file_exists($metadataFilePath)) {
             return;
