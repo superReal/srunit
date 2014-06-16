@@ -5,6 +5,7 @@ namespace SrUnit;
 use SrUnit\Bootstrap\DirectoryFinder;
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
+use SrUnit\Bootstrap\Emulator\Oxid;
 use SrUnit\Bootstrap\SrUnitModule;
 
 /**
@@ -72,33 +73,6 @@ class Bootstrap
         $this->isOXIDMandatory = true;
 
         return $this;
-    }
-
-    /**
-     * Enable bypassing OXID (e.g. needed for overriding oxNew())
-     *
-     * @return $this
-     */
-    public function bypassOXID()
-    {
-        if ($this->isOXIDLoaded()) {
-            SrUnitModule::activate();
-        }
-
-        $this->isOXIDBypassed = true;
-
-        return $this;
-    }
-
-    /**
-     * Enable emulation of standard OXID functionalities
-     *
-     * @throws \InvalidArgumentException
-     * @return $this
-     */
-    public function emulateOXID()
-    {
-        throw new \InvalidArgumentException(__METHOD__  . ' not implemented yet.');
     }
 
     /**
@@ -180,11 +154,10 @@ class Bootstrap
             if (file_exists($path)) {
                 require_once $path;
                 $this->isOXIDLoaded = true;
-
-                if ($this->isOXIDBypassed()) {
-                    $this->activateSrUnit();
-                }
+                $this->activateSrUnit();
             }
+        } else {
+            Oxid::emulate();
         }
     }
 

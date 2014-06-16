@@ -3,7 +3,7 @@
 namespace SrUnit\Mock;
 
 use Mockery;
-use SrUnit\Mock\Builder\AbstractProvisioner;
+use SrUnit\Mock\AbstractProvisioner;
 use SrUnit\Mock\MockGenerator\CustomMockInterface;
 use OutOfBoundsException;
 use SrOxUtilsObject;
@@ -14,8 +14,8 @@ use SrOxUtilsObject;
  * @link http://www.superReal.de
  * @copyright (C) superReal GmbH | Create Commerce
  * @package SrUnit\Mock
- * @author Jens Wiese <j.wiese AT superreal.de>
  * @author Thomas Oppelt <t.oppelt AT superreal.de>
+ * @author Jens Wiese <j.wiese AT superreal.de>
  */
 class Factory
 {
@@ -63,19 +63,12 @@ class Factory
     /**
      * @var bool
      */
-    protected $shouldBeRegisteredForOxidFactory = false;
+    protected $shouldBeRegisteredForOxNew = false;
 
     /**
      * @var bool
      */
     protected $shouldBeProvisioned = false;
-
-    /**
-     * Holds extended oxutilsobject factory
-     *
-     * @var SrOxUtilsObject
-     */
-    protected $oxUtilsObject;
 
     /**
      * @var AbstractProvisioner
@@ -96,6 +89,22 @@ class Factory
         }
 
         return new self($className);
+    }
+
+    /**
+     * @param string $className
+     * @return Factory
+     * @throws Exception
+     */
+    public static function createParentClass($className)
+    {
+        if (false === is_string($className)) {
+            throw new Exception(
+                'Could not create parent class. You have to provide a class-name when using ' . __METHOD__ . '.'
+            );
+        }
+
+        return new self('overload:' . $className . '_parent');
     }
 
     /**
@@ -148,17 +157,6 @@ class Factory
     }
 
     /**
-     * @param \SrOxUtilsObject $oxUtilsObject
-     * @return $this
-     */
-    public function setOxUtilsObject($oxUtilsObject)
-    {
-        $this->oxUtilsObject = $oxUtilsObject;
-
-        return $this;
-    }
-
-    /**
      * Returns mock-object
      *
      * @return Mockery\MockInterface|CustomMockInterface
@@ -171,7 +169,7 @@ class Factory
             $this->mockObject = $this->getMockeryProxy()->getMock($this->actualObject);
         }
 
-        if ($this->shouldBeRegisteredForOxidFactory) {
+        if ($this->shouldBeRegisteredForOxNew) {
             $this->mockObject->shouldDeferMissing();
             $this->getRegistry()->set($this->originalClassName, $this->mockObject);
         }
@@ -183,18 +181,6 @@ class Factory
         $this->applyDataForInterfaces();
 
         return $this->mockObject;
-    }
-
-    /**
-     * Enables mocking of _parent class for OXID multi-inheritance
-     *
-     * @return $this
-     */
-    public function isOxidParentClass()
-    {
-        $this->mockClassName = 'overload:' . $this->originalClassName . '_parent';
-
-        return $this;
     }
 
     /**
@@ -234,10 +220,10 @@ class Factory
      *
      * @return $this
      */
-    public function registerForOxidFactory()
+    public function registerForOxNew()
     {
-        $this->mockClassName = $this->getOxUtilsObject()->getClassName(strtolower($this->originalClassName));
-        $this->shouldBeRegisteredForOxidFactory = true;
+        $this->mockClassName = strtolower($this->originalClassName);
+        $this->shouldBeRegisteredForOxNew = true;
 
         return $this;
     }

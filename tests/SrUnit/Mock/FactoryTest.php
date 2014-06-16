@@ -77,7 +77,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
      * @expectedException \SrUnit\Mock\Exception
      * @expectedExceptionMessage Interface 'InterfaceName' does not exist.
      */
-    public function testMockingNotExistingInterfaces()
+    public function testMockingNotExistingInterface()
     {
         Factory::create('TestClass')
             ->implementsInterface('InterfaceName')
@@ -132,13 +132,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
         $this->mockeryProxy->shouldReceive('getMock')->andReturn($dummyMock);
         $this->registry->shouldReceive('set')->with('TestClass', $dummyMock)->once();
-        $this->oxUtilsObject->shouldReceive('getClassName')->with('testclass')->once();
 
         Factory::create('TestClass')
             ->setMockeryProxy($this->mockeryProxy)
             ->setRegistry($this->registry)
-            ->setOxUtilsObject($this->oxUtilsObject)
-            ->registerForOxidFactory()
+            ->registerForOxNew()
             ->getMock();
     }
 
@@ -151,11 +149,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\stdClass', $mock);
     }
 
-    public function testExtendingOxidParentClass()
+    public function testCreatingOxidParentClass()
     {
-        $mock = Factory::create('\stdClass')
-            ->isOxidParentClass()
-            ->getMock();
+        $mock = Factory::createParentClass('\stdClass')->getMock();
 
         $mock->shouldReceive('getFoo')->andReturn('bar');
 
