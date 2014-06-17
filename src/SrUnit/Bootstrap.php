@@ -51,16 +51,6 @@ class Bootstrap
     private function __construct($testDir = null)
     {
         $this->directoryFinder = $this->getDirectoryFinder($testDir);
-
-        register_shutdown_function(array('SrUnitModule', 'deactivateSrUnit'));
-    }
-
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        SrUnitModule::deactivate();
     }
 
     /**
@@ -154,7 +144,6 @@ class Bootstrap
             if (file_exists($path)) {
                 require_once $path;
                 $this->isOXIDLoaded = true;
-                $this->activateSrUnit();
             }
         } else {
             Oxid::emulate();
