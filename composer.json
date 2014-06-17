@@ -2,7 +2,7 @@
     "name": "superreal/srunit",
     "description": "OXID-Module containing environment for writing unit tests for OXID modules.",
     "tags": "OXID, testing, unit-test, mock",
-    "type": "oxid-module",
+    "license": "GPL-3.0+",
     "authors": [
         {
             "name": "Jens Wiese",
