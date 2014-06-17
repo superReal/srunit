@@ -19,16 +19,14 @@ The following steps are needed to setup unit testing for your module.
 
 Add phpunit.xml to module-root with at least the following content:
 
-	<phpunit bootstrap="./tests/bootstrap.php">
+	<phpunit bootstrap="tests/bootstrap.php">
       <testsuites>
         <testsuite>
-            <directory>./tests</directory>
+            <directory>tests</directory>
         </testsuite>
       </testsuites>
       <listeners>
-        <listener
-            class='SrUnit\Adapter\Phpunit\TestListener'
-            file='./../srunit/src/SrUnit/Adapter/Phpunit/TestListener.php'/>
+        <listener class='SrUnit\Adapter\Phpunit\TestListener' />
       </listeners>
     </phpunit>
     
