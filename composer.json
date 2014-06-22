@@ -17,7 +17,7 @@
         "fzaninotto/faker": "v1.3.0"
     },
     "suggest": {
-        "superreal/srunit-oxid-module": "Enables sR Unit to override OXID core functionalities (e.g. oxNew()), to do integration tests for instance."
+        "superreal/srunit-oxid-module": "0.9.*@dev"
     },
     "autoload": {
         "psr-0": {
