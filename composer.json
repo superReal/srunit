@@ -1,12 +1,13 @@
 {
     "name": "superreal/srunit",
-    "description": "OXID-Module containing environment for writing unit tests for OXID modules.",
+    "description": "Library containing environment especially for writing unit tests for OXID modules.",
     "tags": "OXID, testing, unit-test, mock",
     "license": "GPL-3.0+",
     "authors": [
         {
             "name": "Jens Wiese",
-            "email": "j.wiese@superreal.de"
+            "email": "j.wiese@superreal.de",
+            "role": "maintainer"
         }
     ],
     "require": {
@@ -14,6 +15,9 @@
         "mockery/mockery": "0.9.0",
         "mikey179/vfsStream": "v1.2.0",
         "fzaninotto/faker": "v1.3.0"
+    },
+    "suggest": {
+        "superreal/srunit-oxid-module": "Enables sR Unit to override OXID core functionalities (e.g. oxNew()), to do integration tests for instance."
     },
     "autoload": {
         "psr-0": {
