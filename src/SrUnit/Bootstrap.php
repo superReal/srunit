@@ -6,6 +6,7 @@ use SrUnit\Bootstrap\DirectoryFinder;
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
 use SrUnit\Bootstrap\Emulator\Oxid;
+use SrUnit\Bootstrap\OxidLoader;
 use SrUnit\Bootstrap\SrUnitModule;
 
 /**
@@ -138,15 +139,11 @@ class Bootstrap
      */
     protected function loadOXIDFramework()
     {
-        if ($this->isOXIDMandatory()) {
-            $path = $this->directoryFinder->getShopBaseDir() . 'bootstrap.php';
+        $loader = OxidLoader::getInstance()->setDirectoryFinder($this->directoryFinder);
 
-            if (file_exists($path)) {
-                require_once $path;
-                $this->isOXIDLoaded = true;
-            }
-        } else {
-            Oxid::emulate();
+        if ($this->isOXIDMandatory()) {
+            $loader->load();
+            $this->isOXIDLoaded = $loader->isLoaded();
         }
     }
 
