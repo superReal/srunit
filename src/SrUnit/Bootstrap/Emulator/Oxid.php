@@ -14,16 +14,12 @@ class Oxid
 {
     public static function emulate()
     {
-        if (false === function_exists('oxNew')) {
-            function oxNew($className) {
-                return Registry::getInstance()->get(strtolower($className));
-            }
-        }
+        include __DIR__ . '/functions.php';
 
-        if (false === class_exists('oxDb')) {
-            class_alias('\SrUnit\Bootstrap\Emulator\oxDb', 'oxDb');
+        if (false === class_exists('\oxDb')) {
+            class_alias('\SrUnit\Bootstrap\Emulator\oxDb', '\oxDb');
         }
     }
 
 
-} 
+}

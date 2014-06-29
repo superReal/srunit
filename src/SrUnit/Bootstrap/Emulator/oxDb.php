@@ -4,6 +4,8 @@ namespace SrUnit\Bootstrap\Emulator;
 
 class oxDb
 {
+    const FETCH_MODE_ASSOC = 'assoc';
+
     /**
      * Sets configs object with method getVar() and properties needed for successful connection.
      *
