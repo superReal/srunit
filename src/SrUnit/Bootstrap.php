@@ -168,8 +168,6 @@ class Bootstrap
             return;
         }
         $customLoader = function ($className) use ($aModule) {
-            $className = strtolower($className);
-
             if (isset($aModule['files'][$className])) {
                 $path = substr(
                     $aModule['files'][$className],
@@ -179,7 +177,6 @@ class Bootstrap
                 require_once $path;
             }
         };
-
         spl_autoload_register($customLoader);
     }
 
