@@ -2,8 +2,6 @@
 
 namespace SrUnit\Bootstrap;
 
-use SrUnit\Mock\Registry;
-
 /**
  * Class OxidLoader
  *
@@ -97,4 +95,36 @@ class OxidLoader
         return $this->isEmulated;
     }
 
-} 
+    /**
+     * Activate sR Unit OXID module
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function activateModule()
+    {
+        if (false === class_exists('\oxModule')) {
+            throw new \InvalidArgumentException('Could not load sR Unit Module, because OXID is not available.');
+        }
+
+        $module = new \oxModule();
+        $module->load('srunit');
+
+        if (false === $module->isActive()) {
+            $module->activate();
+        }
+
+        define('SRUNIT_TESTS', true);
+    }
+
+    /**
+     * Deactivate sR Unit OXID module
+     */
+    protected function deactivateModule()
+    {
+        $module = new \oxModule();
+        $module->load('srunit');
+        if ($module->isActive()) {
+            $module->deactivate();
+        }
+    }
+}

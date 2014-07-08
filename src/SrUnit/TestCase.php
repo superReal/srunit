@@ -20,7 +20,7 @@ use SrUnit\Bootstrap\OxidLoader;
 class TestCase extends PHPUnit_Framework_TestCase
 {
     /**
-     * Whether test
+     * Whether test needs OXID framework or not
      *
      * @var bool
      */
@@ -80,38 +80,4 @@ class TestCase extends PHPUnit_Framework_TestCase
 
         return $return;
     }
-
-    /**
-     * Activate sR Unit OXID module
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function activateModule()
-    {
-        if (false === class_exists('\oxModule')) {
-            throw new \InvalidArgumentException('Could not load sR Unit Module, because OXID is not available.');
-        }
-
-        $module = new \oxModule();
-        $module->load('srunit');
-
-        if (false === $module->isActive()) {
-            $module->activate();
-        }
-
-        define('SRUNIT_TESTS', true);
-    }
-
-    /**
-     * Deactivate sR Unit OXID module
-     */
-    protected function deactivateModule()
-    {
-        $module = new \oxModule();
-        $module->load('srunit');
-        if ($module->isActive()) {
-            $module->deactivate();
-        }
-    }
-
 }
