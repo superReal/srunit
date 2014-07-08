@@ -40,23 +40,19 @@ Your tests should be placed in `tests`. Under tests you place your `bootstrap.ph
     
 The bootstrapping process will retrieve all needed directories on its own, and will load the composer autoloader, and a custom autoloader for the classes of your OXID module - based on the configuration in your `metadata.php`.
 
+### TestCases must derive from SrUnit\TestCase
+
+All of your TestCases should extend the SrUnit\TestCase in order to enable the OXID related functionatities or convience-methods. 
+
 #### Loading OXID
 
 OXID is **not** loaded by default. Basic functionalities like `oxNew()` or `oxDb::getDb()` are emulated. You can control their behaviour by using mocks.
 
-In case you need OXID loaded (e.g. for integration tests) you can either load OXID on bootstrap:
-
-    \SrUnit\Boostrap::create(__DIR__)->loadOXID()->bootstrap();
-
-or you even better you add the test that needs OXID to the group `needs-oxid` by adding a annotation:
+In case you need OXID loaded (e.g. for integration tests) you can load OXID by adding a group annotation:
 
     @group needs-oxid
 
-In the latter case the `TestListener` will take care of loading OXID, and enabling/disabling the needed module `superreal/srunit-module`. This module has to be required in your `composer.json` as well - otherwise the test will die with an Exception.
-
-### TestCases should derive from SrUnit\TestCase
-
-All of your TestCases should extend the SrUnit\TestCase in order to enable the OXID related functionatities or convience-methods. 
+The `TestListener` will activate the loading of OXID for the particular tests, and enabling/disabling the needed module `superreal/srunit-module`. This module has to be required in your `composer.json` as well - otherwise the test will die with an Exception.
 
 
 Using the Mock-Factory
@@ -88,21 +84,7 @@ When it comes to extending OXID core classes (e.g. oxArticle) you might need to 
 Be aware that this call will actually define a class `SrMyExtensionOxArticle_parent` with the behaviour you will apply on it. 
 
 Meaning: After the initial instantiation the class it will have the same behaviour for the whole PHP process. Whenever you'll create a new instance, you will get the same results.
-When you need different behaviour for different tests you have to run your tests in isolation. 
-
-You can achieve this by simply add the annotations to your test class:
-
-    @runTestsInSeparateProcesses
-    
-or to a particular method:
-
-    @runTestInSeparateProcess
- 
-When you load the OXID framework on boostrap, you have to add the following annotation as well:
-
-    @preserveGlobalState disabled
-    
-Otherwise your tests will die in vain.
+When you need different behaviour for different tests you have to run your tests in isolation.
 
 
 ### Integration Tests with Usage of OXID-Factory
@@ -114,7 +96,7 @@ In case you need to test the integration of your module or you'd like to use the
         ->getMock();
         
 This call will create a mock, and will also register this mock-object to be retrieved on every call of `oxNew('oxArticle')`.
-This is pretty usefull when you have dependend classes that make usage of oxNew() calls very often, and you're not able to change this behaviour from the outside.
+This is pretty usefull when you have dependant classes that make usage of oxNew() calls very often, and you're not able to change this behaviour from the outside.
 
 ### Provisioned Mocks
 
@@ -151,6 +133,3 @@ For those interfaces it is needed to pass on data to the method in order to have
         ->getMock();
 
 You will iterate over the given data, when you use this mock.
-
-
-
