@@ -72,11 +72,7 @@ class OxidLoader
 
     public function emulate()
     {
-        if (false === function_exists('oxNew')) {
-            function oxNew($className) {
-                return Registry::getInstance()->get(strtolower($className));
-            }
-        }
+        include __DIR__ . '/Emulation/functions.php';
 
         if (false === class_exists('\oxDb')) {
             class_alias('\SrUnit\Bootstrap\Emulation\oxDb', '\oxDb');
