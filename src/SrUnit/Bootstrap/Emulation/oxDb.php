@@ -6,7 +6,10 @@ use SrUnit\Mock\Factory;
 
 class oxDb
 {
+    protected static $receiveAndReturns = array();
+
     const FETCH_MODE_ASSOC = 'assoc';
+    const FETCH_MODE_NUM = 'num';
 
     /**
      * Sets configs object with method getVar() and properties needed for successful connection.
@@ -48,6 +51,29 @@ class oxDb
         $db->shouldIgnoreMissing();
         $db->shouldReceive()->andReturn();
 
+        foreach (self::$receiveAndReturns as $receiveAndReturn) {
+            list($receive, $return) = $receiveAndReturn;
+            $db->shouldReceive($receive)->andReturn($return);
+        }
+
         return $db;
     }
+
+    /**
+     * @param $receive
+     * @param $return
+     */
+    public static function shouldReceiveAndReturn($receive, $return)
+    {
+        self::$receiveAndReturns[] = array($receive, $return);
+    }
+
+    /**
+     *
+     */
+    public static function resetReceiveAndReturns()
+    {
+        self::$receiveAndReturns = array();
+    }
+
 }
