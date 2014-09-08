@@ -76,6 +76,14 @@ class OxidLoader
             class_alias('\SrUnit\Bootstrap\Emulation\oxDb', '\oxDb');
         }
 
+        if (false === class_exists('\oxField')) {
+            class_alias('\SrUnit\Bootstrap\Emulation\oxField', '\oxField');
+        }
+
+        if (false === class_exists('\oxRegistry')) {
+            class_alias('\SrUnit\Bootstrap\Emulation\oxRegistry', '\oxRegistry');
+        }
+
         $this->isEmulated = true;
     }
 
