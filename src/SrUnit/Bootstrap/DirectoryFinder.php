@@ -74,6 +74,16 @@ class DirectoryFinder
     }
 
     /**
+     * Checks whether or not current call where performed from shop-root
+     *
+     * @return bool
+     */
+    public function isCallFromShopBaseDir()
+    {
+        return $this->getShopBaseDir() == $this->getModuleDir();
+    }
+
+    /**
      * @param string $directory
      * @return $this
      * @throws \InvalidArgumentException
@@ -97,6 +107,7 @@ class DirectoryFinder
     protected function retrieveShopBaseDir()
     {
         $directories = array(
+            $this->getTestDir() . '/..',
             $this->getTestDir() . '/../../..',
             $this->getTestDir() . '/../../../..',
         );

@@ -15,13 +15,13 @@ Setup Unit Tests for Module
 ---------------
 The following steps are needed to setup unit testing for your module.
 
-### Configuration
+### Module Configuration
 
 Add phpunit.xml to module-root with at least the following content:
 
 	<phpunit bootstrap="tests/bootstrap.php">
       <testsuites>
-        <testsuite>
+        <testsuite name="Module Tests">
             <directory>tests</directory>
         </testsuite>
       </testsuites>
@@ -29,6 +29,27 @@ Add phpunit.xml to module-root with at least the following content:
         <listener class='SrUnit\Adapter\Phpunit\TestListener' />
       </listeners>
     </phpunit>
+    
+
+### Project/Shop Configuration
+
+Add phpunit.xml to shop-root with the following content:
+
+	<phpunit bootstrap="tests/bootstrap.php">
+      <testsuites>
+        <testsuite name="Project Tests">
+            <directory>tests</directory>
+        </testsuite>
+        <testsuite name="Module Tests">
+            <directory>modules</directory>
+        </testsuite>     
+      </testsuites>
+      <listeners>
+        <listener class='SrUnit\Adapter\Phpunit\TestListener' />
+      </listeners>
+    </phpunit>
+    
+Once you've done that you can run phpunit from your shop root, and all tests will be performed (project- and module-related).   
     
 **Note:** Adding the `TestListener` has the effect, that after each test the expectations are verified.
 
@@ -38,7 +59,12 @@ Your tests should be placed in `tests`. Under tests you place your `bootstrap.ph
 
     \SrUnit\Boostrap::create(__DIR__)->bootstrap();
     
-The bootstrapping process will retrieve all needed directories on its own, and will load the composer autoloader, and a custom autoloader for the classes of your OXID module - based on the configuration in your `metadata.php`.
+The bootstrapping process will retrieve all needed directories on its own, and will load the `composer autoloader`, and a `custom autoloader` for the classes of your OXID module - based on the configuration in your `metadata.php`.
+
+This also applies when you're running your tests from your shop-root. In that case the bootstrapping will set up autoloading for all tests, even the tests within your modules. But this is based on the correct configuration of your module. Meaning: the module is responsible to set up the autoloading correct. 
+
+This is done first of all by adding the "autoload" configuration in your `composer.json`. If you need to define more than one directory for one Namespace (e.g. for your tests) you have to do it there. 
+Additional to that, the `metadata.php` is taken into account. Either in the `"extend"`, and/or the `"files"` section. 
 
 ### TestCases must derive from SrUnit\TestCase
 
@@ -53,6 +79,15 @@ In case you need OXID loaded (e.g. for integration tests) you can load OXID by a
     @group needs-oxid
 
 The `TestListener` will activate the loading of OXID for the particular tests, and enabling/disabling the needed module `superreal/srunit-module`. This module has to be required in your `composer.json` as well - otherwise the test will die with an Exception.
+
+
+Running *phpunit*
+---------------
+
+When you set up your environment as mentioned before, you can run `phpunit` either in your shop-root, or in a specific module. But in order to have the autoloading setup correctly you need to run the phpunit that is *shipped with composer*. Depending on your setup you can use the following calls:
+
+    bin/phpunit
+    vendor/bin/phpunit
 
 
 Using the Mock-Factory

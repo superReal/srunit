@@ -6,6 +6,7 @@ use SrUnit\Bootstrap\DirectoryFinder;
 use Composer\Autoload\ClassLoader;
 use RuntimeException;
 use SrUnit\Bootstrap\Emulator\Oxid;
+use SrUnit\Bootstrap\ModuleAutoloader;
 use SrUnit\Bootstrap\OxidLoader;
 use SrUnit\Bootstrap\SrUnitModule;
 
@@ -128,7 +129,6 @@ class Bootstrap
     protected function loadComposerAutoloader()
     {
         $path = $this->directoryFinder->getVendorDir() . '/autoload.php';
-
         if (file_exists($path)) {
             $this->composerClassLoader = require $path;
         }
@@ -149,32 +149,20 @@ class Bootstrap
 
     /**
      * Bootstraps all files defined in metadata.php
-     * of current module
+     * of current module / or of all under modules
      */
     protected function registerModuleAutoloader()
     {
-        $metadataFilePath = $this->directoryFinder->getModuleDir() . '/metadata.php';
-
-        if (false === file_exists($metadataFilePath)) {
-            return;
+        if ($this->directoryFinder->isCallFromShopBaseDir()) {
+            $pathToModules = $this->directoryFinder->getShopBaseDir() . '/modules';
+            $metadataFiles = glob($pathToModules . '/*/metadata.php');
+        } else {
+            $metadataFiles = array($this->directoryFinder->getModuleDir() . '/metadata.php');
         }
 
-        require_once $metadataFilePath;
+        $autoloader = new ModuleAutoloader($metadataFiles);
 
-        if (false === isset($aModule['files'])) {
-            return;
-        }
-        $customLoader = function ($className) use ($aModule) {
-            if (isset($aModule['files'][$className])) {
-                $path = substr(
-                    $aModule['files'][$className],
-                    strpos($aModule['files'][$className], '/') + 1
-                );
-
-                require_once $path;
-            }
-        };
-        spl_autoload_register($customLoader);
+        spl_autoload_register(array($autoloader, 'load'));
     }
 
     /**
