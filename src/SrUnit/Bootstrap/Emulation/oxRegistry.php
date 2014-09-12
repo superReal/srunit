@@ -32,4 +32,19 @@ class oxRegistry
         return Registry::getInstance()->get(strtolower('oxConfig'));
     }
 
+    public static function getLang()
+    {
+        return Registry::getInstance()->get(strtolower('oxLang'));
+    }
+
+    public static function getSession()
+    {
+        return Registry::getInstance()->get(strtolower('oxSession'));
+    }
+
+    public function getUtils()
+    {
+        return Registry::getInstance()->get(strtolower('oxUtils'));
+    }
+
 } 
