@@ -42,7 +42,7 @@ class oxRegistry
         return Registry::getInstance()->get(strtolower('oxSession'));
     }
 
-    public function getUtils()
+    public static function getUtils()
     {
         return Registry::getInstance()->get(strtolower('oxUtils'));
     }
