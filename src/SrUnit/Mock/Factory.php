@@ -104,7 +104,7 @@ class Factory
             );
         }
 
-        return new self('overload:' . $className . '_parent');
+        return new self('overload:' . $className);
     }
 
     /**

@@ -149,15 +149,15 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\stdClass', $mock);
     }
 
-    public function testCreatingOxidParentClass()
+    public function testCreatingParentClass()
     {
-        $mock = Factory::createParentClass('\stdClass')->getMock();
+        $mock = Factory::createParentClass('\whateverClass_parent')->getMock();
 
         $mock->shouldReceive('getFoo')->andReturn('bar');
 
-        $actualObject = new \stdClass_parent();
+        $actualObject = new \whateverClass_parent();
 
-        $this->assertInstanceOf('\stdClass_parent', $actualObject);
+        $this->assertInstanceOf('\whateverClass_parent', $actualObject);
         $this->assertEquals('bar', $actualObject->getFoo());
     }
 
