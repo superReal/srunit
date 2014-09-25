@@ -17,7 +17,8 @@
         "fzaninotto/faker": "v1.3.0"
     },
     "suggest": {
-        "superreal/srunit-oxid-module": "0.9.*@dev"
+        "superreal/srunit-oxid-module": "0.9.*@dev",
+        "jenswiese/phpunit-helpers": "dev-master"
     },
     "autoload": {
         "psr-0": {
