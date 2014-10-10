@@ -14,7 +14,8 @@
         "phpunit/phpunit": "4.1.1",
         "mockery/mockery": "0.9.0",
         "mikey179/vfsStream": "v1.2.0",
-        "fzaninotto/faker": "v1.4.0"
+        "fzaninotto/faker": "v1.4.0",
+        "hamcrest/hamcrest-php": "1.2.0"
     },
     "suggest": {
         "superreal/srunit-oxid-module": "0.9.*@dev",
