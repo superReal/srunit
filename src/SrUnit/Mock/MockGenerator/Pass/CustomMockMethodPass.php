@@ -47,13 +47,13 @@ class CustomMockMethodPass
         $code = <<<EOT
             public function implementsIterator(array \$data)
             {
-                \SrUnit\Mock\CustomMock::create(\$this)->implementsIteratorInterface(\$data);
+                \SrUnit\Mock\CustomMock::create(\$this)->implementsIterator(\$data);
                 return \$this;
             }
 
-            public function provideArrayAccess(array \$data)
+            public function implementsArrayAccess(array \$data)
             {
-                \SrUnit\Mock\CustomMock::create(\$this)->provideArrayAccess(\$data);
+                \SrUnit\Mock\CustomMock::create(\$this)->implementsArrayAccess(\$data);
                 return \$this;
             }
 EOT;
