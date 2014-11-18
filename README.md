@@ -7,7 +7,7 @@ Installation
 ------------
 Just add the following requirement to the `composer.json` of your project, and call `composer update superreal/srunit`
 
-    "superreal/srunit": "1.0*@dev"
+    "superreal/srunit": "0.9*@dev"
 
 All required packages will be installed automatically (e.g. PHPUnit, Mockery).
 
