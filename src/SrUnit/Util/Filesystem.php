@@ -2,6 +2,9 @@
 
 namespace SrUnit\Util;
 
+use SplFileInfo;
+use SrUnit\Util\Filesystem\FilesystemInterface;
+
 /**
  * Class Filesystem
  *
@@ -13,7 +16,7 @@ namespace SrUnit\Util;
  * @package SrUnit\Util
  * @author Jens Wiese <j.wiese AT superreal.de>
  */
-class Filesystem
+class Filesystem implements FilesystemInterface
 {
     /**
      * @var string
@@ -32,26 +35,31 @@ class Filesystem
         }
     }
 
+    public function __destruct()
+    {
+        $this->tearDown();
+    }
+
     /**
      * @param string $path
-     * @return string Created directory
+     * @return SplFileInfo
      */
     public function createDirectory($path)
     {
         $path = $this->getFullpath($path);
 
         if (is_dir($path)) {
-            return realpath($path);
+            return new SplFileInfo($path);
         }
 
         if (mkdir($path, 0777, true)) {
-            return realpath($path);
+            return new SplFileInfo($path);
         }
     }
 
     /**
      * @param string $path
-     * @return string Created file
+     * @return SplFileInfo
      */
     public function createFile($path, $content = null)
     {
@@ -61,7 +69,7 @@ class Filesystem
 
         if (touch($path)) {
             file_put_contents($path, $content);
-            return realpath($path);
+            return new SplFileInfo($path);
         }
     }
 
@@ -106,7 +114,7 @@ class Filesystem
     /**
      * Remove complete directory structure (incl. root-dir)
      */
-    public function removeFilesystem()
+    public function tearDown()
     {
         exec('rm -rf ' . $this->rootDirectory);
     }
@@ -117,7 +125,7 @@ class Filesystem
      * @param $path
      * @return string
      */
-    protected function getFullpath($path)
+    public function getFullpath($path)
     {
         return $this->rootDirectory . DIRECTORY_SEPARATOR . trim($path, '/');
     }
