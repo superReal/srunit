@@ -18,8 +18,6 @@ class TestListener extends \Mockery\Adapter\Phpunit\TestListener
     public function startTestSuite(\PHPUnit_Framework_TestSuite $suite)
     {
         $this->markTestsThatNeedOXID($suite);
-        $suite->setRunTestInSeparateProcess(true);
-
         parent::startTestSuite($suite);
     }
 

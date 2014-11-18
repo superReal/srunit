@@ -7,7 +7,7 @@ Installation
 ------------
 Just add the following requirement to the `composer.json` of your project, and call `composer update superreal/srunit`
 
-    "superreal/srunit": "0.9.*@dev"
+    "superreal/srunit": "1.0*@dev"
 
 All required packages will be installed automatically (e.g. PHPUnit, Mockery).
 
@@ -112,14 +112,22 @@ Afterwards you can define the behaviour of the mock by simply use the Mockery me
 
 ### Testing OXID Extensions
 
-When it comes to extending OXID core classes (e.g. oxArticle) you might need to test whether your implementation is correct or not. In case you don't need to have the whole OXID stack to test your implementation, you can mock just the _parent class by doing this:
+When it comes to extending OXID core classes (e.g. oxArticle) you might need to test whether your implementation is correct or not. In case you don't need to have the whole OXID stack to test your implementation, you can mock just the `_parent` class by doing this:
 
-    $mock = Factory::createParentClass('\SrMyExtensionOxArticle')->getMock();
+    $mock = Factory::createParentClass('\SrMyExtensionOxArticle_parent')->getMock();
 
 Be aware that this call will actually define a class `SrMyExtensionOxArticle_parent` with the behaviour you will apply on it. 
 
 Meaning: After the initial instantiation the class it will have the same behaviour for the whole PHP process. Whenever you'll create a new instance, you will get the same results.
-When you need different behaviour for different tests you have to run your tests in isolation.
+When you need different behaviour for different tests you have to run your tests in isolation by adding the following annotation to your test method:
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testInSeparateProcess()
+    {
+        // ...
+    }
 
 
 ### Integration Tests with Usage of OXID-Factory
