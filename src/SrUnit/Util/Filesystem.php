@@ -3,7 +3,6 @@
 namespace SrUnit\Util;
 
 use SplFileInfo;
-use SrUnit\Util\Filesystem\FilesystemInterface;
 
 /**
  * Class Filesystem
@@ -16,7 +15,7 @@ use SrUnit\Util\Filesystem\FilesystemInterface;
  * @package SrUnit\Util
  * @author Jens Wiese <j.wiese AT superreal.de>
  */
-class Filesystem implements FilesystemInterface
+class Filesystem
 {
     /**
      * @var string
