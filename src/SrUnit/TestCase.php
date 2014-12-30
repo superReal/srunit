@@ -4,10 +4,8 @@ namespace SrUnit;
 
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_TestResult;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamFile;
 use SrUnit\Bootstrap\OxidLoader;
+use SrUnit\Util\Filesystem\FilesystemInterface;
 
 /**
  * Class TestCase extends PHPUnit default testcase
@@ -45,24 +43,18 @@ class TestCase extends PHPUnit_Framework_TestCase
     /**
      * Returns virtual filesystem for given root directory (based on vfsStream)
      *
-     * @param string $rootDirName
-     * @param int $permissions
-     * @param array $structure
-     * @return vfsStreamDirectory
+     * @param string $rootDir
+     * @return FilesystemInterface
      */
-    public function createVirtualFileSystem($rootDirName, $permissions = null, array $structure = array())
+    public function createFilesystem($rootDir, $type = FilesystemInterface::VIRTUAL)
     {
-        return vfsStream::setup($rootDirName, $permissions, $structure);
-    }
+        $classname = '\SrUnit\Util\Filesystem\\' . $type;
 
-    /**
-     * @param string $name
-     * @param int $permissions
-     * @return vfsStreamFile
-     */
-    public function createVirtualFile($name, $permissions = null)
-    {
-        return new vfsStreamFile($name, $permissions);
+        if (false === class_exists($classname)) {
+            throw new \InvalidArgumentException(sprintf('Could not create filesystem "%s".', $type));
+        }
+
+        return new $classname($rootDir);
     }
 
     /**

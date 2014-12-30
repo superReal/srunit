@@ -1,6 +1,6 @@
 <?php
 
-namespace SrUnit\Util;
+namespace SrUnit\Util\Filesystem;
 
 use SplFileInfo;
 
@@ -15,7 +15,7 @@ use SplFileInfo;
  * @package SrUnit\Util
  * @author Jens Wiese <j.wiese AT superreal.de>
  */
-class Filesystem
+class Filesystem implements FilesystemInterface
 {
     /**
      * @var string
@@ -73,40 +73,16 @@ class Filesystem
     }
 
     /**
-     * @param string $path
-     * @param int $permissions
-     * @return bool
-     */
-    public function chmod($path, $permissions)
-    {
-        $path = $this->getFullpath($path);
-
-        return chmod($path, $permissions);
-    }
-
-    /**
-     * @param string $path
-     * @param int $timestamp
-     * @return bool
-     */
-    public function setModificationTime($path, $timestamp)
-    {
-        $path = $this->getFullpath($path);
-
-        return touch($path, $timestamp);
-    }
-
-    /**
      * @param string $link
      * @param string $target
-     * @return string Created symlink
+     * @return SplFileInfo
      */
     public function createSymlink($link, $target)
     {
         $link = $this->getFullpath($link);
 
         if (symlink($target, $link)) {
-            return $link;
+            return new SplFileInfo($link);
         }
     }
 
@@ -124,7 +100,7 @@ class Filesystem
      * @param $path
      * @return string
      */
-    public function getFullpath($path)
+    protected function getFullpath($path)
     {
         return $this->rootDirectory . DIRECTORY_SEPARATOR . trim($path, '/');
     }

@@ -176,3 +176,59 @@ For those interfaces it is needed to pass on data to the method in order to have
         ->getMock();
 
 You will iterate over the given data, when you use this mock.
+
+## Mocking the Filesystem
+
+If your SUT depends on the filesystem, and you want to set up a certain test environment, you can use the filesystem-utility.
+
+### Create the Filesystem
+
+You are able to choose between a virtual or a physical filesystem. Whereas a virtual filesystem is suitable for most of the cases, sometimes it's necessary to go with a physical filesystem (e.g. if you're dealing with symlinks).
+
+_(The virtual filesystem is realized with [vfsStream](http://vfs.bovigo.org/))_
+
+    $fs = new VirtualFilesystem($rootDir);
+
+or
+    
+    $fs = new Filesystem($rootDir); 
+
+#### By using `TestCase::createFilesystem()`
+
+Within your `TestCase` you can call the method `createFilesystem()`. You're able to choose between a virtual or a physical filesystem by passing on a second parameter. Either way, the usage is the same.
+
+    $fs = $this->createFilesystem('/tmp', FilesystemInterface::VIRTUAL);
+
+or 
+
+    $fs = $this->createFilesystem('/tmp', FilesystemInterface::PHYSICAL);
+    
+_Info: Even if you choose a physical filesystem and define `/tmp` as the root-directory, the created environment is not written to system temporary directory `/tmp`._
+
+### Create Directories and Files
+
+You will get back an object which implements the `FilesystemInterface`:
+
+* `createDirectory()`
+* `createFile()`
+* `tearDown()`
+
+You can create directories and files with fullpaths.
+
+    $filesystem->createDirectory('path/to/diretory');
+    $filesystem->createFile('path/to/file.txt');
+    
+In return you will get an `SplFileInfo` object you can work with.
+
+### Clean up Environment
+
+In order to control the clean up process of your tests, you need to call the `tearDown()` method (e.g. in your `TestCase`'s `tearDown()` method).
+
+    protected function tearDown()
+    {
+        $this->filesystem->tearDown();
+    }
+
+Actually this is only needed if you're using the physical filesystem, because the virtual one only exists in memory and is removed automatically. But in order to keep it consistent: stick to this approach.
+
+

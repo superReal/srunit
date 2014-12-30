@@ -6,7 +6,7 @@ $pathsToAutoloader = array(
 );
 
 foreach ($pathsToAutoloader as $path) {
-    if (is_dir($path)) {
+    if (is_file($path)) {
         require_once $path;
     }
 }

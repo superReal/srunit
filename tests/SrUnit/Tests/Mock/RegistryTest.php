@@ -1,10 +1,18 @@
 <?php
 
-namespace SrUnit\Mock;
+namespace SrUnit\Tests\Mock;
 
-use SrUnit\TestCase;
+use SrUnit\Mock\Registry;
 
-class RegistryTest extends TestCase
+/**
+ * Class RegistryTest
+ *
+ * @link http://www.superReal.de
+ * @copyright (C) superReal GmbH | Create Commerce
+ * @package SrUnit\Tests\Mock
+ * @author Jens Wiese <j.wiese AT superreal.de>
+ */
+class RegistryTest extends \PHPUnit_Framework_TestCase
 {
 
     public function tearDown()

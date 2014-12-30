@@ -1,16 +1,17 @@
 <?php
 
-namespace SrUnit\Mock;
+namespace SrUnit\Tests\Mock;
 
 use PHPUnit_Framework_TestCase;
 use Mockery;
+use SrUnit\Mock\Factory;
 
 /**
  * Class FactoryTest
  *
  * @link http://www.superReal.de
  * @copyright (C) superReal GmbH | Create Commerce
- * @package SrUnit\Mock
+ * @package SrUnit\Tests\Mock
  * @author Jens Wiese <j.wiese AT superreal.de>
  */
 class FactoryTest extends PHPUnit_Framework_TestCase
@@ -24,6 +25,10 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     /** @var Mockery\MockInterface | \SrOxUtilsObject */
     protected $oxUtilsObject;
 
+    public static function setUpBeforeClass()
+    {
+        date_default_timezone_set('UTC');
+    }
 
     protected function setUp()
     {
