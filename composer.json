@@ -16,7 +16,7 @@
         "mikey179/vfsStream": "v1.2.0",
         "fzaninotto/faker": "v1.4.0",
         "hamcrest/hamcrest-php": "1.2.0",
-        "jenswiese/phpunit-helpers": "dev-master"
+        "jenswiese/phpunit-helpers": "~0.1"
     },
     "suggest": {
         "superreal/srunit-oxid-module": "0.9.*@dev"
