@@ -57,7 +57,7 @@ Once you've done that you can run phpunit from your shop root, and all tests wil
 
 Your tests should be placed in `tests`. Under tests you place your `bootstrap.php` with the following content:
 
-    \SrUnit\Boostrap::create(__DIR__)->bootstrap();
+    \SrUnit\Bootstrap::create(__DIR__)->bootstrap();
     
 The bootstrapping process will retrieve all needed directories on its own, and will load the `composer autoloader`, and a `custom autoloader` for the classes of your OXID module - based on the configuration in your `metadata.php`.
 
