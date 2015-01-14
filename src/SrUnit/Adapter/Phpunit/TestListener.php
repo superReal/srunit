@@ -2,6 +2,8 @@
 
 namespace SrUnit\Adapter\Phpunit;
 
+use SrUnit\Mock\Registry;
+
 /**
  * Class TestListener
  *
@@ -27,6 +29,15 @@ class TestListener extends \Mockery\Adapter\Phpunit\TestListener
     public function endTestSuite(\PHPUnit_Framework_TestSuite $suite)
     {
         parent::endTestSuite($suite);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function endTest(\PHPUnit_Framework_Test $test, $time)
+    {
+        Registry::getInstance()->resetAll();
+        parent::endTest($test, $time);
     }
 
     /**
