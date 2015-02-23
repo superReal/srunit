@@ -27,12 +27,12 @@ class Filesystem implements FilesystemInterface
      */
     public function __construct($rootDirectory)
     {
-        if (false === realpath($rootDirectory)) {
-            $rootDirectory = tempnam(sys_get_temp_dir(), __CLASS__);
+        $isRelativePath = strpos($rootDirectory, '/') !== 0;
+        if ($isRelativePath) {
+            $rootDirectory = sprintf('%s/%s', sys_get_temp_dir(), $rootDirectory);
         }
 
         $this->rootDirectory = rtrim($rootDirectory, '/');
-
         if (false === is_dir($rootDirectory)) {
             mkdir($this->rootDirectory, 0777, true);
         }

@@ -20,6 +20,7 @@ class TestCaseTest extends \PHPUnit_Framework_TestCase
         $case = new TestCase();
         $fs = $case->createFilesystem('foo', FilesystemInterface::PHYSICAL);
         $this->assertInstanceOf('\SrUnit\Util\Filesystem\Filesystem', $fs);
+        $fs->tearDown();
     }
 
     public function testCreateVirtualFilesystem()
