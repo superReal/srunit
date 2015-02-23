@@ -60,7 +60,7 @@ class OxidLoader
      */
     public function load()
     {
-        $path = $this->directoryFinder->getShopBaseDir() . 'bootstrap.php';
+        $path = $this->directoryFinder->getShopBaseDir() . '/bootstrap.php';
 
         if (file_exists($path)) {
             require_once $path;
