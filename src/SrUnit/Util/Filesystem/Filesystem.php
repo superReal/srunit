@@ -27,6 +27,10 @@ class Filesystem implements FilesystemInterface
      */
     public function __construct($rootDirectory)
     {
+        if (false === realpath($rootDirectory)) {
+            $rootDirectory = tempnam(sys_get_temp_dir(), __CLASS__);
+        }
+
         $this->rootDirectory = rtrim($rootDirectory, '/');
 
         if (false === is_dir($rootDirectory)) {
@@ -37,6 +41,14 @@ class Filesystem implements FilesystemInterface
     public function __destruct()
     {
         $this->tearDown();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootDirectory()
+    {
+        return $this->rootDirectory;
     }
 
     /**
