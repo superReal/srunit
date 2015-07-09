@@ -76,6 +76,11 @@ class Factory
     protected $provisioner;
 
     /**
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @param string $className
      * @throws Exception
      * @return Factory
@@ -163,11 +168,8 @@ class Factory
      */
     public function getMock()
     {
-        if (is_null($this->actualObject)) {
-            $this->mockObject = $this->getMockeryProxy()->getMock($this->getMockTargetsAsString());
-        } else {
-            $this->mockObject = $this->getMockeryProxy()->getMock($this->actualObject);
-        }
+        $target = is_object($this->actualObject) ? $this->actualObject : $this->generateMockTargets();
+        $this->mockObject = $this->getMockeryProxy()->getMock($this->getName(), $target);
 
         if ($this->shouldBeRegisteredForOxNew) {
             $this->mockObject->shouldDeferMissing();
@@ -238,6 +240,27 @@ class Factory
         return $this->registerForOXID();
     }
 
+    /**
+     * Set name of mock
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function name($name)
+    {
+        $containsNamespace = (false !== strpos($name, '\\'));
+        if ($containsNamespace) {
+            throw new \BadMethodCallException(
+                sprintf('Method "%s" cannot handle names including namespaces.', __METHOD__)
+            );
+        }
+
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     protected function shouldImplementInterfaces()
@@ -338,7 +361,7 @@ class Factory
      *
      * @return string
      */
-    protected function getMockTargetsAsString()
+    protected function generateMockTargets()
     {
         $targets = array($this->mockClassName);
 
@@ -349,5 +372,13 @@ class Factory
         $targetString = implode(', ', $targets);
 
         return $targetString;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getName()
+    {
+        return $this->name;
     }
 }

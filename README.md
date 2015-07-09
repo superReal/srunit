@@ -109,6 +109,15 @@ Simple Mock, simple call:
 Afterwards you can define the behaviour of the mock by simply use the Mockery methods: 
 
     $mock->shouldReceive('getParam')->andReturn('a-value')
+    
+### Named Mocks
+
+By using the method `name()` you can define a different classname for your mock:
+
+     $mock = Factory::create('TestClass')->name('DifferentTestClass')->getMock();
+
+*Note: You cannot provide names including namespaces.*
+
 
 ### Testing OXID Extensions
 

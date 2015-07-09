@@ -91,11 +91,19 @@ class MockeryProxy extends Mockery
     /**
      * Method acts as proxy method to mock-object.
      *
+     * @param string $name
+     * @param mixed $target
      * @return Mockery\MockInterface
      */
-    public function getMock()
+    public function getMock($name, $target)
     {
         $args = func_get_args();
-        return call_user_func_array(array('\SrUnit\Mock\MockeryProxy', 'mock'), $args);
+        if (is_null($name)) {
+            array_shift($args);
+            return call_user_func_array(array('\SrUnit\Mock\MockeryProxy', 'mock'), $args);
+
+        } else {
+            return $this->namedMock($name, $target);
+        }
     }
 }

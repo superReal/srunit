@@ -62,7 +62,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
     public function testSimpleMock()
     {
-        $this->mockeryProxy->shouldReceive('getMock')->with('TestClass')->once();
+        $this->mockeryProxy->shouldReceive('getMock')->with(null, 'TestClass')->once();
 
         Factory::create('TestClass')
             ->setMockeryProxy($this->mockeryProxy)
@@ -91,7 +91,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
     public function testMockThatImplementsInterfaces()
     {
-        $this->mockeryProxy->shouldReceive('getMock')->with('TestClass, \Iterator, \ArrayAccess')->once();
+        $this->mockeryProxy->shouldReceive('getMock')->with(null, 'TestClass, \Iterator, \ArrayAccess')->once();
 
         Factory::create('TestClass')
             ->setMockeryProxy($this->mockeryProxy)
@@ -173,5 +173,35 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->assertInstanceOf('\oxField', $mock->oxarticles__oxid);
+    }
+
+    public function testMockNameIsPassedToProxy()
+    {
+        $this->mockeryProxy->shouldReceive('getMock')->with('MockName', 'TestClass')->once();
+
+        Factory::create('TestClass')
+            ->setMockeryProxy($this->mockeryProxy)
+            ->name('MockName')
+            ->getMock();
+    }
+
+    /**
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Method "SrUnit\Mock\Factory::name" cannot handle names including namespaces.
+     */
+    public function testMockNameWithNamespaceLeadToException()
+    {
+        Factory::create('TestClass')
+            ->name('\\SrUnit\\MockName')
+            ->getMock();
+    }
+
+    public function testMockNameIsUsedAsClassname()
+    {
+        $mock = Factory::create('TestClass')
+            ->name('MockName')
+            ->getMock();
+
+        $this->assertInstanceOf('MockName', $mock);
     }
 }
