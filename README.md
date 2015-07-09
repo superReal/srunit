@@ -135,10 +135,10 @@ When you need different behaviour for different tests you have to run your tests
 In case you need to test the integration of your module or you'd like to use the OXID factory in order to have the whole stack available, you can use the following call:
 
     $mock = Factory::create('\oxArticle')
-        ->registerForOxNew()
+        ->registerForOXID()
         ->getMock();
         
-This call will create a mock, and will also register this mock-object to be retrieved on every call of `oxNew('oxArticle')`.
+This call will create a mock, and will also register this mock-object to be accessible by calling `oxNew('oxArticle')` or `oxRegistry::get('oxArticle')`
 This is pretty usefull when you have dependant classes that make usage of oxNew() calls very often, and you're not able to change this behaviour from the outside.
 
 ### Provisioned Mocks

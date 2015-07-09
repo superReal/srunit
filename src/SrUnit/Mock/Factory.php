@@ -216,11 +216,11 @@ class Factory
     }
 
     /**
-     * Enables registration of mock object for OXIDs oxNew()
+     * Enables registration of mock object for OXIDs oxNew() / oxRegistry::get()
      *
      * @return $this
      */
-    public function registerForOxNew()
+    public function registerForOXID()
     {
         $this->mockClassName = strtolower($this->originalClassName);
         $this->shouldBeRegisteredForOxNew = true;
@@ -229,6 +229,15 @@ class Factory
     }
 
     /**
+     * @deprecated Use registerForOXID() instead
+     *
+     * @return $this
+     */
+    public function registerForOxNew()
+    {
+        return $this->registerForOXID();
+    }
+
      * @return bool
      */
     protected function shouldImplementInterfaces()

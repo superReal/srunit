@@ -141,7 +141,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         Factory::create('TestClass')
             ->setMockeryProxy($this->mockeryProxy)
             ->setRegistry($this->registry)
-            ->registerForOxNew()
+            ->registerForOXID()
             ->getMock();
     }
 
